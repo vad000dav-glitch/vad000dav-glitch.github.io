@@ -3,36 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- TIKTOK_VERIFY: insert the meta tag from TikTok "URL properties" here, e.g.
+<!-- TIKTOK_VERIFY: paste the meta tag from TikTok "URL properties" here, e.g.
      <meta name="tiktok-developers-site-verification" content="XXXXXXXX"> -->
-<title>Terr-a-spect</title>
+<title>Terr-a-spect — Nature content studio</title>
+<meta name="description" content="Terr-a-spect is a nature content studio that produces and publishes original wildlife, macro and landscape photography and video across social platforms.">
+<link rel="icon" type="image/png" href="./icon.png">
 <style>
   :root{color-scheme:dark}
-  body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a1018;color:#e8edf4;
-       max-width:760px;margin:0 auto;padding:60px 20px;line-height:1.6}
-  h1{font-size:2rem;margin-bottom:.2em}
-  .tag{color:#8fb7d6;font-size:1.05rem;margin-bottom:2em}
-  a{color:#7fc8ff}
-  .card{background:#121b27;border:1px solid #1e2c3c;border-radius:14px;padding:22px 24px;margin:14px 0}
-  footer{margin-top:3em;color:#6f8197;font-size:.9rem}
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a1624;color:#e8edf4;
+       margin:0;line-height:1.6}
+  .wrap{max-width:860px;margin:0 auto;padding:56px 22px}
+  header{display:flex;align-items:center;gap:18px;margin-bottom:8px}
+  header img{width:72px;height:72px;border-radius:18px;box-shadow:0 6px 22px rgba(0,0,0,.45)}
+  h1{font-size:2.1rem;margin:0}
+  .tag{color:#8fd6bf;font-size:1.1rem;margin:6px 0 34px}
+  a{color:#7fe0c2}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:26px 0}
+  .card{background:#10202e;border:1px solid #1d3140;border-radius:14px;padding:22px 24px}
+  .card h3{margin:0 0 8px;font-size:1.05rem;color:#bfe9da}
+  .card p{margin:0;color:#c5d2dd;font-size:.96rem}
+  h2{font-size:1.3rem;margin-top:40px}
+  .legal a{margin-right:18px}
+  footer{margin-top:46px;color:#7e93a6;font-size:.9rem;border-top:1px solid #18293a;padding-top:18px}
 </style>
 </head>
 <body>
-  <h1>Terr-a-spect 🌿</h1>
+<div class="wrap">
+  <header>
+    <img src="./icon.png" alt="Terr-a-spect logo">
+    <div>
+      <h1>Terr-a-spect</h1>
+    </div>
+  </header>
   <div class="tag">Capturing the hidden beauty of nature · Wildlife · Macro · Landscapes</div>
 
-  <div class="card">
-    <p>Terr-a-spect is a private automation tool that publishes our own original nature
-    photography and video content to our own brand accounts across social platforms
-    (TikTok, Facebook, Instagram, YouTube and Telegram).</p>
+  <p>Terr-a-spect is a nature content studio. We produce original photography and short-form
+  video of the natural world and publish it under the Terr-a-spect brand across social
+  platforms — TikTok, Facebook, Instagram, YouTube and Telegram.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Original content</h3>
+      <p>Every photo, video and soundtrack is produced in-house. We publish only material we
+      create and own.</p></div>
+    <div class="card"><h3>Scheduled publishing</h3>
+      <p>Our publishing tool prepares captions and uploads finished videos to our own connected
+      brand accounts at planned times.</p></div>
+    <div class="card"><h3>Official APIs only</h3>
+      <p>Content is delivered through each platform's official Content Posting API using a secure
+      OAuth connection to our own accounts.</p></div>
   </div>
 
-  <div class="card">
-    <p><strong>Legal</strong></p>
-    <p>· <a href="./privacy.html">Privacy Policy</a><br>
-       · <a href="./terms.html">Terms of Service</a></p>
-  </div>
+  <h2>How the TikTok integration works</h2>
+  <p>The Terr-a-spect publishing tool connects to our own TikTok account through TikTok's official
+  OAuth flow and uses the Content Posting API to upload and publish our own finished nature videos.
+  It reads only the basic information of the connected account to confirm the right account is
+  linked. It does not access, collect or post content on behalf of any other TikTok users.</p>
 
-  <footer>Contact: <a href="mailto:vad000dav@gmail.com">vad000dav@gmail.com</a></footer>
+  <h2 class="legal">Legal</h2>
+  <p class="legal">
+    <a href="./privacy.html">Privacy Policy</a>
+    <a href="./terms.html">Terms of Service</a>
+  </p>
+
+  <footer>
+    Terr-a-spect · Nature content studio<br>
+    Contact: <a href="mailto:vad000dav@gmail.com">vad000dav@gmail.com</a>
+  </footer>
+</div>
 </body>
 </html>
