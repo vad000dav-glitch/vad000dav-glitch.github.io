@@ -6,70 +6,198 @@
 <!-- TIKTOK_VERIFY: paste the meta tag from TikTok "URL properties" here, e.g.
      <meta name="tiktok-developers-site-verification" content="XXXXXXXX"> -->
 <title>Terr-a-spect — Nature content studio</title>
-<meta name="description" content="Terr-a-spect is a nature content studio that produces and publishes original wildlife, macro and landscape photography and video across social platforms.">
+<meta name="description" content="Terr-a-spect is a nature content studio producing original wildlife, macro and landscape photography and short-form video, published across TikTok, Instagram, YouTube, Facebook, Threads and Telegram.">
+<meta property="og:title" content="Terr-a-spect — Nature content studio">
+<meta property="og:description" content="Capturing the hidden beauty of nature. Wildlife · Macro · Landscapes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://terr-a-spect.com/">
+<meta property="og:image" content="https://terr-a-spect.com/icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
+<link rel="apple-touch-icon" href="./icon.png">
 <style>
-  :root{color-scheme:dark}
-  *{box-sizing:border-box}
-  body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0a1624;color:#e8edf4;
-       margin:0;line-height:1.6}
-  .wrap{max-width:860px;margin:0 auto;padding:56px 22px}
-  header{display:flex;align-items:center;gap:18px;margin-bottom:8px}
-  header img{width:72px;height:72px;border-radius:18px;box-shadow:0 6px 22px rgba(0,0,0,.45)}
-  h1{font-size:2.1rem;margin:0}
-  .tag{color:#8fd6bf;font-size:1.1rem;margin:6px 0 34px}
-  a{color:#7fe0c2}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:26px 0}
-  .card{background:#10202e;border:1px solid #1d3140;border-radius:14px;padding:22px 24px}
-  .card h3{margin:0 0 8px;font-size:1.05rem;color:#bfe9da}
-  .card p{margin:0;color:#c5d2dd;font-size:.96rem}
-  h2{font-size:1.3rem;margin-top:40px}
-  .legal a{margin-right:18px}
-  footer{margin-top:46px;color:#7e93a6;font-size:.9rem;border-top:1px solid #18293a;padding-top:18px}
+  :root{
+    --bg0:#06121a; --bg1:#0a1f28; --bg2:#0d2730;
+    --surface:rgba(18,38,49,.6); --border:rgba(120,190,170,.16);
+    --text:#e9f3ef; --muted:#9fb6ad; --accent:#5fe3b4; --accent2:#36c79a;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(54,199,154,.18), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(40,120,140,.16), transparent 55%),
+      linear-gradient(180deg,var(--bg0),var(--bg1) 55%,var(--bg2));
+    background-attachment:fixed;
+    color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);
+      background:rgba(6,18,26,.55);border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;gap:14px;height:64px}
+  nav img{width:34px;height:34px;border-radius:9px}
+  nav .brand{font-weight:700;letter-spacing:.2px}
+  nav .links{margin-left:auto;display:flex;gap:22px}
+  nav .links a{color:var(--muted);font-size:.95rem}
+  nav .links a:hover{color:var(--text);text-decoration:none}
+  @media(max-width:640px){nav .links{display:none}}
+
+  /* hero */
+  header.hero{padding:84px 0 64px;text-align:center}
+  .logo-big{width:120px;height:120px;border-radius:30px;
+            box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px var(--border);margin-bottom:26px}
+  h1{font-size:clamp(2.4rem,6vw,3.6rem);font-weight:800;letter-spacing:-.5px;line-height:1.05}
+  .grad{background:linear-gradient(90deg,var(--accent),#7fd0ff);-webkit-background-clip:text;
+        background-clip:text;color:transparent}
+  .tagline{color:var(--muted);font-size:1.2rem;margin:18px auto 0;max-width:620px}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:12px;
+       font-weight:600;font-size:.98rem}
+  .btn.primary{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#06231a}
+  .btn.primary:hover{text-decoration:none;filter:brightness(1.07)}
+  .btn.ghost{border:1px solid var(--border);color:var(--text);background:var(--surface)}
+  .btn.ghost:hover{text-decoration:none;border-color:var(--accent)}
+
+  /* sections */
+  section{padding:56px 0}
+  .eyebrow{color:var(--accent);font-weight:700;font-size:.82rem;letter-spacing:2px;text-transform:uppercase}
+  h2{font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:750;margin:8px 0 8px}
+  .lead{color:var(--muted);max-width:680px}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:30px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px;
+        backdrop-filter:blur(6px);transition:transform .15s,border-color .15s}
+  .card:hover{transform:translateY(-3px);border-color:var(--accent)}
+  .card .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
+            background:rgba(95,227,180,.12);margin-bottom:14px}
+  .card h3{font-size:1.12rem;margin-bottom:7px}
+  .card p{color:var(--muted);font-size:.97rem}
+
+  /* channels */
+  .channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:30px}
+  .chan{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);
+        border-radius:14px;padding:15px 18px;color:var(--text);font-weight:600;transition:.15s}
+  .chan:hover{text-decoration:none;border-color:var(--accent);transform:translateY(-2px)}
+  .chan svg{width:24px;height:24px;flex:0 0 24px;fill:currentColor}
+  .chan.soon{opacity:.5;cursor:default}
+  .chan.soon:hover{transform:none;border-color:var(--border)}
+  .chan small{display:block;font-weight:400;color:var(--muted);font-size:.8rem}
+
+  /* data box */
+  .databox{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:30px}
+  .databox ul{margin:14px 0 0;padding-left:20px;color:var(--muted)}
+  .databox li{margin:6px 0}
+  .legal-links{display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}
+
+  footer{border-top:1px solid var(--border);padding:34px 0;margin-top:30px;color:var(--muted);font-size:.92rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <img src="./icon.png" alt="Terr-a-spect logo">
-    <div>
-      <h1>Terr-a-spect</h1>
-    </div>
-  </header>
-  <div class="tag">Capturing the hidden beauty of nature · Wildlife · Macro · Landscapes</div>
 
-  <p>Terr-a-spect is a nature content studio. We produce original photography and short-form
-  video of the natural world and publish it under the Terr-a-spect brand across social
-  platforms — TikTok, Facebook, Instagram, YouTube and Telegram.</p>
-
-  <div class="grid">
-    <div class="card"><h3>Original content</h3>
-      <p>Every photo, video and soundtrack is produced in-house. We publish only material we
-      create and own.</p></div>
-    <div class="card"><h3>Scheduled publishing</h3>
-      <p>Our publishing tool prepares captions and uploads finished videos to our own connected
-      brand accounts at planned times.</p></div>
-    <div class="card"><h3>Official APIs only</h3>
-      <p>Content is delivered through each platform's official Content Posting API using a secure
-      OAuth connection to our own accounts.</p></div>
+<nav><div class="wrap">
+  <img src="./icon.png" alt="Terr-a-spect logo">
+  <span class="brand">Terr-a-spect</span>
+  <div class="links">
+    <a href="#what">What we do</a>
+    <a href="#channels">Channels</a>
+    <a href="#data">Your data</a>
+    <a href="mailto:vad000dav@gmail.com">Contact</a>
   </div>
+</div></nav>
 
-  <h2>How the TikTok integration works</h2>
-  <p>The Terr-a-spect publishing tool connects to our own TikTok account through TikTok's official
-  OAuth flow and uses the Content Posting API to upload and publish our own finished nature videos.
-  It reads only the basic information of the connected account to confirm the right account is
-  linked. It does not access, collect or post content on behalf of any other TikTok users.</p>
+<header class="hero"><div class="wrap">
+  <img class="logo-big" src="./icon.png" alt="Terr-a-spect logo">
+  <h1>Terr-a-spect</h1>
+  <p class="tagline">Capturing the hidden beauty of nature.<br>Wildlife · Macro · Landscapes.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://t.me/terr_a_spect" target="_blank" rel="noopener">Join on Telegram</a>
+    <a class="btn ghost" href="#channels">All our channels</a>
+  </div>
+</div></header>
 
-  <h2 class="legal">Legal</h2>
-  <p class="legal">
-    <a href="./privacy.html">Privacy Policy</a>
-    <a href="./terms.html">Terms of Service</a>
-  </p>
+<section id="what"><div class="wrap">
+  <div class="eyebrow">What we do</div>
+  <h2>A nature content studio</h2>
+  <p class="lead">We produce original photography and short-form video of the natural world and
+  publish it under the Terr-a-spect brand across social platforms. Every photo, video and
+  soundtrack is created in-house — we publish only material we make and own.</p>
+  <div class="cards">
+    <div class="card">
+      <div class="ic">🌿</div>
+      <h3>Original content</h3>
+      <p>Wildlife, macro and landscape photography and video, produced and owned by us — no
+      third-party or reposted material.</p>
+    </div>
+    <div class="card">
+      <div class="ic">🗓️</div>
+      <h3>Scheduled publishing</h3>
+      <p>Our publishing tool prepares captions and uploads finished videos to our own connected
+      brand accounts at planned times.</p>
+    </div>
+    <div class="card">
+      <div class="ic">🔒</div>
+      <h3>Official APIs only</h3>
+      <p>Content is delivered through each platform's official Content Posting API over a secure
+      OAuth connection to our own accounts.</p>
+    </div>
+  </div>
+</div></section>
 
-  <footer>
-    Terr-a-spect · Nature content studio<br>
-    Contact: <a href="mailto:vad000dav@gmail.com">vad000dav@gmail.com</a>
-  </footer>
-</div>
+<section id="channels"><div class="wrap">
+  <div class="eyebrow">Find us</div>
+  <h2>Our channels</h2>
+  <p class="lead">Follow Terr-a-spect across platforms. Our full-length nature soundtracks live on
+  the Telegram channel.</p>
+  <div class="channels">
+    <a class="chan" href="https://t.me/terr_a_spect" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+      Telegram <small>@terr_a_spect</small>
+    </a>
+    <!-- CHANNELS_TODO: add TikTok / Instagram / YouTube / Facebook / Threads / Pinterest
+         once the exact profile URLs are confirmed. -->
+    <span class="chan soon">More channels<small>coming soon</small></span>
+  </div>
+</div></section>
+
+<section id="data"><div class="wrap">
+  <div class="eyebrow">Transparency</div>
+  <h2>How our integrations use your data</h2>
+  <div class="databox">
+    <p>The Terr-a-spect publishing tool connects only to our own brand accounts through each
+    platform's official OAuth flow, in order to upload and publish our own finished content.</p>
+    <ul>
+      <li>It stores only the authorization tokens for our own connected accounts, kept privately
+      on our own secured server.</li>
+      <li>It reads basic account info (identifier and display name) only to confirm the right
+      account is connected.</li>
+      <li>It does <strong>not</strong> access, collect or post content on behalf of any other
+      users, and never sells or shares data.</li>
+    </ul>
+    <p style="margin-top:16px"><strong>Data deletion:</strong> to request removal of any data the
+    tool holds, email <a href="mailto:vad000dav@gmail.com">vad000dav@gmail.com</a>. Authorization
+    can also be revoked at any time from the connected account's settings, which immediately stops
+    all access.</p>
+    <div class="legal-links">
+      <a href="./privacy.html">Privacy Policy →</a>
+      <a href="./terms.html">Terms of Service →</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>© 2026 Terr-a-spect · Nature content studio</div>
+  <div>
+    <a href="./privacy.html">Privacy</a> ·
+    <a href="./terms.html">Terms</a> ·
+    <a href="mailto:vad000dav@gmail.com">vad000dav@gmail.com</a>
+  </div>
+</div></footer>
+
 </body>
 </html>
