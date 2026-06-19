@@ -71,9 +71,16 @@
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent)}
   input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--accent)}
   .pDl{color:var(--muted);font-size:1.3rem;padding:4px 8px} .pDl:hover{color:var(--accent)}
+  .pVol{display:flex;align-items:center;gap:6px}
+  .pVol button{background:none;border:0;color:var(--muted);cursor:pointer;padding:2px;display:grid;place-items:center}
+  .pVol button:hover{color:var(--accent)} .pVol svg{width:20px;height:20px;fill:currentColor}
+  .pVol input[type=range]{width:84px;flex:0 0 84px}
+  .rvol{display:none}
+  .row.on .rvol{display:inline-block;width:72px;flex:0 0 72px}
   @media(max-width:640px){
     .pInfo{width:auto;flex:1} .pSeek{order:5;flex-basis:100%;width:100%}
     .pSeek span{display:none} .player .pw{flex-wrap:wrap;gap:10px} .pDl{display:none}
+    .pVol input[type=range]{width:64px;flex:0 0 64px} .row.on .rvol{display:none}
   }
 
   footer{border-top:1px solid var(--border);padding:26px 0;margin-top:30px;color:var(--muted);font-size:.9rem}
@@ -118,6 +125,10 @@
     <input id="seek" type="range" min="0" max="1000" value="0" oninput="seekTo(this.value)">
     <span id="dur">0:00</span>
   </div>
+  <div class="pVol">
+    <button id="muteBtn" onclick="toggleMute()" aria-label="Mute"></button>
+    <input id="vol" type="range" min="0" max="100" value="100" oninput="setVol(this.value)" aria-label="Volume">
+  </div>
   <a class="pDl" id="pDl" href="#" download aria-label="Download">⬇</a>
 </div></div>
 
@@ -131,9 +142,12 @@
 const MEDIA="https://media.terr-a-spect.com";
 const ART="https://terr-a-spect.com/icon.png";
 const ICONS={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
-             pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>'};
+             pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
+             vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>',
+             mute:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 7.4 15 8.9l2.1 2.1L15 13.1l1.5 1.5 2.1-2.1 2.1 2.1 1.5-1.5L20.1 11l2.1-2.1-1.5-1.5L18.6 9.5z"/></svg>'};
 let tracks=[],cur=-1;
 const audio=new Audio();audio.preload="metadata";
+let vol=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(vol))vol=1; audio.volume=vol; let lastVol=vol||1;
 const $=id=>document.getElementById(id);
 const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -153,10 +167,11 @@ function render(){
     <div class="row" data-i="${i}" onclick="play(${i})">
       <div class="num"><span class="n">${i+1}</span><span class="pi">▶</span></div>
       <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
+      <input class="rvol" type="range" min="0" max="100" value="100" onclick="event.stopPropagation()" oninput="setVol(this.value)" aria-label="Volume">
       <div class="dur">${fmt(t.duration)}</div>
       <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
     </div>`).join('');
-  mark();
+  mark(); syncVol();
 }
 function updCount(){$('count').textContent=tracks.length?tracks.length+" "+tt('mus_tracks'):"";}
 function play(i){
@@ -173,6 +188,11 @@ function prev(){if(tracks.length)play((cur-1+tracks.length)%tracks.length);}
 function playAll(){if(tracks.length)play(0);}
 function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
 function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
+function setVol(v){vol=Math.max(0,Math.min(1,v/100));audio.volume=vol;if(vol>0)lastVol=vol;localStorage.setItem('ts_vol',vol);syncVol();}
+function toggleMute(){setVol(vol>0?0:(lastVol||1)*100);}
+function syncVol(){const p=Math.round(vol*100);const pv=$('vol');if(pv)pv.value=p;
+  document.querySelectorAll('.rvol').forEach(r=>r.value=p);
+  const mb=$('muteBtn');if(mb)mb.innerHTML=vol>0?ICONS.vol:ICONS.mute;}
 function setMs(t){
   if('mediaSession' in navigator){
     navigator.mediaSession.metadata=new MediaMetadata({title:t.title||'',artist:t.performer||'Terr-a-spect',
@@ -190,7 +210,7 @@ audio.addEventListener('timeupdate',()=>{
   const d=audio.duration||0,c=audio.currentTime||0;
   $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
 });
-$('pBtn').innerHTML=ICONS.play;
+$('pBtn').innerHTML=ICONS.play; syncVol();
 window.addEventListener('langchange',updCount);
 init();
 </script>
