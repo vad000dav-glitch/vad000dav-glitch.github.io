@@ -74,6 +74,7 @@
   .pCtrls button:hover{color:var(--accent)}
   .pCtrls .big{background:var(--text);color:#06231a;width:42px;height:42px}
   .pCtrls .big:hover{background:var(--accent)}
+  .pCtrls .shuf.on{color:var(--accent);background:rgba(95,227,180,.16)}
   .pCtrls svg{width:20px;height:20px;fill:currentColor} .pCtrls .big svg{width:22px;height:22px}
   .pSeek{flex:1;display:flex;align-items:center;gap:10px;min-width:120px}
   .pSeek span{color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums;width:34px;text-align:center}
@@ -131,7 +132,7 @@
     <button onclick="prev()" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
     <button class="big" id="pBtn" onclick="toggle()" aria-label="Play"></button>
     <button onclick="next()" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
-    <button onclick="randomPlay()" aria-label="Random" title="Random track"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
+    <button id="shufBtn" class="shuf" onclick="toggleShuffle()" aria-label="Shuffle" title="Shuffle — next track is random"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
   </div>
   <div class="pSeek">
     <span id="cur">0:00</span>
@@ -163,6 +164,7 @@ const ICONS={
 let tracks=[], view=[], page=0, cur=-1, saveT=0;
 const audio=new Audio(); audio.preload="metadata";
 let vol=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(vol))vol=1; audio.volume=vol; let lastVol=vol||1;
+let shuffle=localStorage.getItem('ts_shuffle')==='1';
 const $=id=>document.getElementById(id);
 const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -225,9 +227,12 @@ function loadTrack(i,seek,autoplay){
 }
 function play(i){ if(i===cur){toggle();return;} loadTrack(i,0,true); }
 function toggle(){ if(cur<0&&tracks.length){loadTrack(0,0,true);return;} audio.paused?audio.play():audio.pause(); }
-function next(){ if(tracks.length) loadTrack((cur+1)%tracks.length,0,true); }
+function randIdx(){ if(tracks.length<=1)return 0; let i; do{i=Math.floor(Math.random()*tracks.length);}while(i===cur); return i; }
+function pickNext(){ return shuffle?randIdx():(cur+1)%tracks.length; }
+function next(){ if(tracks.length) loadTrack(pickNext(),0,true); }
 function prev(){ if(tracks.length) loadTrack((cur-1+tracks.length)%tracks.length,0,true); }
-function randomPlay(){ if(!tracks.length)return; let i; do{i=Math.floor(Math.random()*tracks.length);}while(tracks.length>1&&i===cur); loadTrack(i,0,true); }
+function toggleShuffle(){ shuffle=!shuffle; localStorage.setItem('ts_shuffle',shuffle?'1':'0'); updShuf(); }
+function updShuf(){ const b=$('shufBtn'); if(b) b.classList.toggle('on',shuffle); }
 function playAll(){ if(view.length) loadTrack(tracks.indexOf(view[0]),0,true); }
 function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
 function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
@@ -257,7 +262,7 @@ audio.addEventListener('timeupdate',()=>{
   $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
   const now=Date.now(); if(now-saveT>3000){saveT=now;persist();}
 });
-$('pBtn').innerHTML=ICONS.play; syncVol();
+$('pBtn').innerHTML=ICONS.play; syncVol(); updShuf();
 window.addEventListener('langchange',()=>{ if(tracks.length) render(); });
 init();
 </script>
