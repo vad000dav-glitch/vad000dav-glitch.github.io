@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Music — Terr-a-spect</title>
+<meta name="description" content="Full-length original nature soundtracks by Terr-a-spect. Listen in the background or download.">
+<link rel="icon" type="image/png" href="./icon.png">
+<style>
+  :root{--bg0:#06121a;--bg1:#0a1f28;--surface:rgba(18,38,49,.6);--border:rgba(120,190,170,.16);
+        --text:#e9f3ef;--muted:#9fb6ad;--accent:#5fe3b4;--accent2:#36c79a;color-scheme:dark}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+       background:radial-gradient(1100px 500px at 85% -10%,rgba(54,199,154,.16),transparent 60%),
+                  linear-gradient(180deg,var(--bg0),var(--bg1));background-attachment:fixed;
+       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:120px}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:0 18px}
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(6,18,26,.6);
+      border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;gap:12px;height:62px}
+  nav img{width:32px;height:32px;border-radius:9px}
+  nav .brand{font-weight:700}
+  nav .home{margin-left:auto;color:var(--muted)} nav .home:hover{color:var(--text)}
+
+  header.h{padding:40px 0 14px}
+  .eyebrow{color:var(--accent);font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase}
+  h1{font-size:2.2rem;font-weight:800;margin:6px 0}
+  .sub{color:var(--muted);max-width:620px}
+  .bar{display:flex;align-items:center;gap:16px;margin:22px 0 8px}
+  .playall{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--accent2),var(--accent));
+           color:#06231a;font-weight:700;border:0;border-radius:30px;padding:12px 24px;cursor:pointer;font-size:1rem}
+  .playall:hover{filter:brightness(1.07)}
+  .count{color:var(--muted);font-size:.92rem}
+
+  .list{margin-top:8px}
+  .row{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:12px;cursor:pointer;transition:.12s}
+  .row:hover{background:var(--surface)}
+  .row.on{background:rgba(95,227,180,.12)}
+  .num{width:26px;text-align:center;color:var(--muted);position:relative;flex:0 0 26px;font-variant-numeric:tabular-nums}
+  .row:hover .n,.row.on .n{display:none}
+  .pi{display:none;color:var(--accent)} .row:hover .pi,.row.on .pi{display:inline}
+  .meta{flex:1;min-width:0}
+  .tt{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row.on .tt{color:var(--accent)}
+  .pf{color:var(--muted);font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dur{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+  .dl{color:var(--muted);font-size:1.2rem;padding:4px 6px;border-radius:8px}
+  .dl:hover{color:var(--accent);background:var(--surface)}
+  .offline{padding:40px 0;color:var(--muted);text-align:center}
+
+  /* bottom player */
+  .player{position:fixed;left:0;right:0;bottom:0;z-index:30;transform:translateY(120%);transition:.25s;
+          background:rgba(8,20,28,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border)}
+  .player.show{transform:none}
+  .player .pw{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+  .pCover{width:46px;height:46px;border-radius:10px;flex:0 0 46px}
+  .pInfo{min-width:0;width:190px}
+  .pTitle{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pPerf{color:var(--muted);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pCtrls{display:flex;align-items:center;gap:6px}
+  .pCtrls button{background:none;border:0;color:var(--text);cursor:pointer;padding:6px;border-radius:50%;
+                 display:grid;place-items:center}
+  .pCtrls button:hover{color:var(--accent)}
+  .pCtrls .big{background:var(--text);color:#06231a;width:42px;height:42px}
+  .pCtrls .big:hover{background:var(--accent)}
+  .pCtrls svg{width:20px;height:20px;fill:currentColor} .pCtrls .big svg{width:22px;height:22px}
+  .pSeek{flex:1;display:flex;align-items:center;gap:10px;min-width:120px}
+  .pSeek span{color:var(--muted);font-size:.78rem;font-variant-numeric:tabular-nums;width:34px;text-align:center}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:#28414a;flex:1;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent)}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--accent)}
+  .pDl{color:var(--muted);font-size:1.3rem;padding:4px 8px} .pDl:hover{color:var(--accent)}
+  @media(max-width:640px){
+    .pInfo{width:auto;flex:1} .pSeek{order:5;flex-basis:100%;width:100%}
+    .pSeek span{display:none} .player .pw{flex-wrap:wrap;gap:10px} .pDl{display:none}
+  }
+
+  footer{border-top:1px solid var(--border);padding:26px 0;margin-top:30px;color:var(--muted);font-size:.9rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  .langs{display:flex;gap:6px}
+  .langbtn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;
+           padding:5px 10px;font-size:.8rem;cursor:pointer}
+  .langbtn.on{color:#06231a;background:var(--accent);border-color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <img src="./icon.png" alt="Terr-a-spect"><span class="brand">Terr-a-spect</span>
+  <a class="home" href="./index.html" data-i18n="nav_home">Home</a>
+</div></nav>
+
+<header class="h"><div class="wrap">
+  <div class="eyebrow" data-i18n="nav_music">Music</div>
+  <h1 data-i18n="mus_title">Music</h1>
+  <p class="sub" data-i18n="mus_sub">Full-length original nature soundtracks. Listen right here — even in the background — or download.</p>
+  <div class="bar">
+    <button class="playall" onclick="playAll()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <span data-i18n="mus_playall">Play all</span>
+    </button>
+    <span class="count" id="count"></span>
+  </div>
+</div></header>
+
+<main class="wrap"><div class="list" id="list"></div></main>
+
+<div class="player" id="player"><div class="pw">
+  <img class="pCover" src="./icon.png" alt="">
+  <div class="pInfo"><div class="pTitle" id="pTitle"></div><div class="pPerf" id="pPerf"></div></div>
+  <div class="pCtrls">
+    <button onclick="prev()" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+    <button class="big" id="pBtn" onclick="toggle()" aria-label="Play"></button>
+    <button onclick="next()" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+  </div>
+  <div class="pSeek">
+    <span id="cur">0:00</span>
+    <input id="seek" type="range" min="0" max="1000" value="0" oninput="seekTo(this.value)">
+    <span id="dur">0:00</span>
+  </div>
+  <a class="pDl" id="pDl" href="#" download aria-label="Download">⬇</a>
+</div></div>
+
+<footer><div class="wrap">
+  <div>© 2026 Terr-a-spect</div>
+  <div class="langs" data-lang-switcher></div>
+</div></footer>
+
+<script src="./i18n.js"></script>
+<script>
+const MEDIA="https://media.terr-a-spect.com";
+const ART="https://terr-a-spect.com/icon.png";
+const ICONS={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+             pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>'};
+let tracks=[],cur=-1;
+const audio=new Audio();audio.preload="metadata";
+const $=id=>document.getElementById(id);
+const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+async function init(){
+  try{
+    const r=await fetch(MEDIA+"/api/tracks",{cache:"no-store"});
+    tracks=(await r.json()).tracks||[];
+    render(); updCount();
+  }catch(e){
+    $('list').innerHTML='<div class="offline" data-i18n="mus_offline"></div>';
+    setLang(localStorage.getItem('ts_lang')||'en');
+  }
+}
+function render(){
+  $('list').innerHTML=tracks.map((t,i)=>`
+    <div class="row" data-i="${i}" onclick="play(${i})">
+      <div class="num"><span class="n">${i+1}</span><span class="pi">▶</span></div>
+      <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
+      <div class="dur">${fmt(t.duration)}</div>
+      <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
+    </div>`).join('');
+  mark();
+}
+function updCount(){$('count').textContent=tracks.length?tracks.length+" "+tt('mus_tracks'):"";}
+function play(i){
+  if(i===cur){toggle();return;}
+  cur=i;const t=tracks[i];
+  audio.src=MEDIA+t.stream;audio.play();
+  $('player').classList.add('show');
+  $('pTitle').textContent=t.title||'—';$('pPerf').textContent=t.performer||'';
+  $('pDl').href=MEDIA+t.download; mark(); setMs(t);
+}
+function toggle(){audio.paused?audio.play():audio.pause();}
+function next(){if(tracks.length)play((cur+1)%tracks.length);}
+function prev(){if(tracks.length)play((cur-1+tracks.length)%tracks.length);}
+function playAll(){if(tracks.length)play(0);}
+function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
+function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
+function setMs(t){
+  if('mediaSession' in navigator){
+    navigator.mediaSession.metadata=new MediaMetadata({title:t.title||'',artist:t.performer||'Terr-a-spect',
+      album:'Terr-a-spect',artwork:[{src:ART,sizes:'512x512',type:'image/png'}]});
+    navigator.mediaSession.setActionHandler('play',()=>audio.play());
+    navigator.mediaSession.setActionHandler('pause',()=>audio.pause());
+    navigator.mediaSession.setActionHandler('previoustrack',prev);
+    navigator.mediaSession.setActionHandler('nexttrack',next);
+  }
+}
+audio.addEventListener('play',()=>$('pBtn').innerHTML=ICONS.pause);
+audio.addEventListener('pause',()=>$('pBtn').innerHTML=ICONS.play);
+audio.addEventListener('ended',next);
+audio.addEventListener('timeupdate',()=>{
+  const d=audio.duration||0,c=audio.currentTime||0;
+  $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
+});
+$('pBtn').innerHTML=ICONS.play;
+window.addEventListener('langchange',updCount);
+init();
+</script>
+</body>
+</html>

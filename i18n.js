@@ -1,0 +1,127 @@
+/* Terr-a-spect — shared i18n. Auto-detects device language, persists choice. */
+(function () {
+  const DICT = {
+    en: {
+      nav_what:"What we do", nav_channels:"Channels", nav_data:"Your data",
+      nav_contact:"Contact", nav_music:"Music", nav_home:"Home",
+      hero_tag:"Capturing the hidden beauty of nature.<br>Wildlife · Macro · Landscapes.",
+      hero_cta_tg:"Join on Telegram", hero_cta_all:"All our channels",
+      what_eyebrow:"What we do", what_h2:"A nature content studio",
+      what_lead:"We produce original photography and short-form video of the natural world and publish it under the Terr-a-spect brand across social platforms. Every photo, video and soundtrack is created in-house — we publish only material we make and own.",
+      c1h:"Original content", c1p:"Wildlife, macro and landscape photography and video, produced and owned by us — no third-party or reposted material.",
+      c2h:"Scheduled publishing", c2p:"Our publishing tool prepares captions and uploads finished videos to our own connected brand accounts at planned times.",
+      c3h:"Official APIs only", c3p:"Content is delivered through each platform's official Content Posting API over a secure OAuth connection to our own accounts.",
+      ch_eyebrow:"Find us", ch_h2:"Our channels",
+      ch_lead:"Follow Terr-a-spect across platforms. Our full-length nature soundtracks live on the Telegram channel — and right here on the site.",
+      data_eyebrow:"Transparency", data_h2:"How our integrations use your data",
+      data_p1:"The Terr-a-spect publishing tool connects only to our own brand accounts through each platform's official OAuth flow, in order to upload and publish our own finished content.",
+      data_li1:"It stores only the authorization tokens for our own connected accounts, kept privately on our own secured server.",
+      data_li2:"It reads basic account info (identifier and display name) only to confirm the right account is connected.",
+      data_li3:"It does not access, collect or post content on behalf of any other users, and never sells or shares data.",
+      data_del:"<strong>Data deletion:</strong> to request removal of any data the tool holds, email <a href=\"mailto:vad000dav@gmail.com\">vad000dav@gmail.com</a>. Authorization can also be revoked at any time from the connected account's settings, which immediately stops all access.",
+      foot_studio:"Nature content studio",
+      mus_title:"Music", mus_sub:"Full-length original nature soundtracks. Listen right here — even in the background — or download.",
+      mus_playall:"Play all", mus_loading:"Loading tracks…", mus_download:"Download",
+      mus_tracks:"tracks", mus_offline:"Music is temporarily unavailable. Please try again in a moment."
+    },
+    uk: {
+      nav_what:"Що ми робимо", nav_channels:"Канали", nav_data:"Твої дані",
+      nav_contact:"Контакт", nav_music:"Музика", nav_home:"Головна",
+      hero_tag:"Ловимо приховану красу природи.<br>Дика природа · Макро · Пейзажі.",
+      hero_cta_tg:"Приєднатися в Telegram", hero_cta_all:"Усі наші канали",
+      what_eyebrow:"Що ми робимо", what_h2:"Студія контенту про природу",
+      what_lead:"Ми створюємо оригінальні фото й короткі відео природного світу й публікуємо їх під брендом Terr-a-spect у соцмережах. Кожне фото, відео й трек зроблені власноруч — публікуємо лише те, що створили й чим володіємо.",
+      c1h:"Оригінальний контент", c1p:"Фото й відео дикої природи, макро та пейзажів, створені й належні нам — без чужого чи репостів.",
+      c2h:"Публікація за розкладом", c2p:"Наш інструмент готує підписи й вивантажує готові відео на власні бренд-акаунти у визначений час.",
+      c3h:"Лише офіційні API", c3p:"Контент доставляється через офіційний Content Posting API кожної платформи захищеним OAuth-зʼєднанням до наших акаунтів.",
+      ch_eyebrow:"Знайди нас", ch_h2:"Наші канали",
+      ch_lead:"Стеж за Terr-a-spect на всіх платформах. Повні треки про природу — у Telegram-каналі й прямо тут на сайті.",
+      data_eyebrow:"Прозорість", data_h2:"Як наші інтеграції використовують дані",
+      data_p1:"Інструмент Terr-a-spect підключається лише до наших власних бренд-акаунтів через офіційний OAuth кожної платформи, щоб вивантажувати й публікувати наш готовий контент.",
+      data_li1:"Зберігає лише токени авторизації наших підключених акаунтів — приватно на власному захищеному сервері.",
+      data_li2:"Читає базову інфо акаунта (ідентифікатор і назву) лише щоб підтвердити правильний акаунт.",
+      data_li3:"Не отримує, не збирає й не публікує контент від імені інших користувачів, ніколи не продає й не передає дані.",
+      data_del:"<strong>Видалення даних:</strong> щоб видалити будь-які дані, які тримає інструмент, напиши на <a href=\"mailto:vad000dav@gmail.com\">vad000dav@gmail.com</a>. Доступ також можна відкликати будь-коли в налаштуваннях акаунта — це миттєво зупиняє доступ.",
+      foot_studio:"Студія контенту про природу",
+      mus_title:"Музика", mus_sub:"Повні оригінальні треки про природу. Слухай прямо тут — навіть у фоні — або завантаж.",
+      mus_playall:"Грати все", mus_loading:"Завантаження треків…", mus_download:"Завантажити",
+      mus_tracks:"треків", mus_offline:"Музика тимчасово недоступна. Спробуй за мить."
+    },
+    es: {
+      nav_what:"Qué hacemos", nav_channels:"Canales", nav_data:"Tus datos",
+      nav_contact:"Contacto", nav_music:"Música", nav_home:"Inicio",
+      hero_tag:"Capturando la belleza oculta de la naturaleza.<br>Fauna · Macro · Paisajes.",
+      hero_cta_tg:"Únete en Telegram", hero_cta_all:"Todos nuestros canales",
+      what_eyebrow:"Qué hacemos", what_h2:"Un estudio de contenido de naturaleza",
+      what_lead:"Producimos fotografía y vídeo corto originales del mundo natural y los publicamos bajo la marca Terr-a-spect en redes sociales. Cada foto, vídeo y banda sonora se crea internamente: solo publicamos material propio.",
+      c1h:"Contenido original", c1p:"Fotografía y vídeo de fauna, macro y paisajes, producidos y propiedad nuestra — sin material de terceros ni reposts.",
+      c2h:"Publicación programada", c2p:"Nuestra herramienta prepara los textos y sube los vídeos terminados a nuestras propias cuentas de marca a horas planificadas.",
+      c3h:"Solo API oficiales", c3p:"El contenido se entrega mediante la API oficial de cada plataforma con una conexión OAuth segura a nuestras cuentas.",
+      ch_eyebrow:"Encuéntranos", ch_h2:"Nuestros canales",
+      ch_lead:"Sigue a Terr-a-spect en todas las plataformas. Las bandas sonoras completas están en el canal de Telegram — y aquí mismo en el sitio.",
+      data_eyebrow:"Transparencia", data_h2:"Cómo usan tus datos nuestras integraciones",
+      data_p1:"La herramienta de Terr-a-spect se conecta solo a nuestras propias cuentas de marca mediante el flujo OAuth oficial de cada plataforma, para subir y publicar nuestro contenido terminado.",
+      data_li1:"Solo guarda los tokens de autorización de nuestras cuentas conectadas, de forma privada en nuestro servidor seguro.",
+      data_li2:"Lee información básica de la cuenta (identificador y nombre) solo para confirmar la cuenta correcta.",
+      data_li3:"No accede, recopila ni publica contenido en nombre de otros usuarios, y nunca vende ni comparte datos.",
+      data_del:"<strong>Eliminación de datos:</strong> para solicitar la eliminación de cualquier dato, escribe a <a href=\"mailto:vad000dav@gmail.com\">vad000dav@gmail.com</a>. También puedes revocar el acceso en cualquier momento desde la configuración de la cuenta.",
+      foot_studio:"Estudio de contenido de naturaleza",
+      mus_title:"Música", mus_sub:"Bandas sonoras originales completas de la naturaleza. Escucha aquí — incluso en segundo plano — o descarga.",
+      mus_playall:"Reproducir todo", mus_loading:"Cargando pistas…", mus_download:"Descargar",
+      mus_tracks:"pistas", mus_offline:"La música no está disponible por ahora. Inténtalo en un momento."
+    },
+    de: {
+      nav_what:"Was wir tun", nav_channels:"Kanäle", nav_data:"Deine Daten",
+      nav_contact:"Kontakt", nav_music:"Musik", nav_home:"Start",
+      hero_tag:"Die verborgene Schönheit der Natur einfangen.<br>Wildlife · Makro · Landschaften.",
+      hero_cta_tg:"Auf Telegram beitreten", hero_cta_all:"Alle unsere Kanäle",
+      what_eyebrow:"Was wir tun", what_h2:"Ein Natur-Content-Studio",
+      what_lead:"Wir produzieren originale Fotografie und Kurzvideos der Natur und veröffentlichen sie unter der Marke Terr-a-spect in sozialen Netzwerken. Jedes Foto, Video und jeder Soundtrack entsteht im eigenen Haus — wir veröffentlichen nur eigenes Material.",
+      c1h:"Originaler Inhalt", c1p:"Wildlife-, Makro- und Landschaftsfotos und -videos, von uns produziert und im Besitz — keine Fremd- oder Repost-Inhalte.",
+      c2h:"Geplante Veröffentlichung", c2p:"Unser Tool erstellt die Texte und lädt fertige Videos zu geplanten Zeiten auf unsere eigenen Marken-Konten hoch.",
+      c3h:"Nur offizielle APIs", c3p:"Inhalte werden über die offizielle Content-Posting-API jeder Plattform via sichere OAuth-Verbindung zu unseren Konten geliefert.",
+      ch_eyebrow:"Finde uns", ch_h2:"Unsere Kanäle",
+      ch_lead:"Folge Terr-a-spect auf allen Plattformen. Die vollständigen Natur-Soundtracks gibt es im Telegram-Kanal — und direkt hier auf der Seite.",
+      data_eyebrow:"Transparenz", data_h2:"Wie unsere Integrationen deine Daten nutzen",
+      data_p1:"Das Terr-a-spect-Tool verbindet sich nur mit unseren eigenen Marken-Konten über den offiziellen OAuth-Ablauf jeder Plattform, um unsere fertigen Inhalte hochzuladen und zu veröffentlichen.",
+      data_li1:"Es speichert nur die Autorisierungs-Tokens unserer verbundenen Konten, privat auf unserem eigenen sicheren Server.",
+      data_li2:"Es liest grundlegende Konto-Infos (Kennung und Name) nur, um das richtige Konto zu bestätigen.",
+      data_li3:"Es greift nicht auf Inhalte anderer Nutzer zu, sammelt oder postet sie nicht und verkauft oder teilt niemals Daten.",
+      data_del:"<strong>Datenlöschung:</strong> um die Löschung von Daten zu beantragen, schreibe an <a href=\"mailto:vad000dav@gmail.com\">vad000dav@gmail.com</a>. Der Zugriff kann auch jederzeit in den Kontoeinstellungen widerrufen werden.",
+      foot_studio:"Natur-Content-Studio",
+      mus_title:"Musik", mus_sub:"Vollständige originale Natur-Soundtracks. Höre direkt hier — auch im Hintergrund — oder lade herunter.",
+      mus_playall:"Alle abspielen", mus_loading:"Titel werden geladen…", mus_download:"Herunterladen",
+      mus_tracks:"Titel", mus_offline:"Musik ist gerade nicht verfügbar. Bitte versuche es gleich erneut."
+    }
+  };
+  const LANGS = [["en","EN"],["uk","УКР"],["es","ES"],["de","DE"]];
+
+  function pick() {
+    const s = localStorage.getItem("ts_lang");
+    if (s && DICT[s]) return s;
+    const n = (navigator.language || "en").slice(0, 2).toLowerCase();
+    return DICT[n] ? n : "en";
+  }
+  function apply(lang) {
+    const d = DICT[lang] || DICT.en;
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const k = el.getAttribute("data-i18n"); if (d[k] != null) el.textContent = d[k];
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(el => {
+      const k = el.getAttribute("data-i18n-html"); if (d[k] != null) el.innerHTML = d[k];
+    });
+    localStorage.setItem("ts_lang", lang);
+    document.querySelectorAll(".langbtn").forEach(b => b.classList.toggle("on", b.dataset.l === lang));
+    window.dispatchEvent(new CustomEvent("langchange", { detail: lang }));
+  }
+  window.setLang = apply;
+  window.tt = function (k) { const l = pick(); return (DICT[l] && DICT[l][k]) || DICT.en[k] || k; };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const host = document.querySelector("[data-lang-switcher]");
+    if (host) host.innerHTML = LANGS.map(([c, l]) =>
+      `<button class="langbtn" data-l="${c}" onclick="setLang('${c}')">${l}</button>`).join("");
+    apply(pick());
+  });
+})();
