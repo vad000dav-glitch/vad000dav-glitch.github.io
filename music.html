@@ -13,7 +13,7 @@
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
        background:radial-gradient(1100px 500px at 85% -10%,rgba(54,199,154,.16),transparent 60%),
                   linear-gradient(180deg,var(--bg0),var(--bg1));background-attachment:fixed;
-       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:120px}
+       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:130px}
   a{color:var(--accent);text-decoration:none}
   .wrap{max-width:860px;margin:0 auto;padding:0 18px}
   nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(6,18,26,.6);
@@ -27,10 +27,13 @@
   .eyebrow{color:var(--accent);font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase}
   h1{font-size:2.2rem;font-weight:800;margin:6px 0}
   .sub{color:var(--muted);max-width:620px}
-  .bar{display:flex;align-items:center;gap:16px;margin:22px 0 8px}
+  .bar{display:flex;align-items:center;gap:14px;margin:22px 0 8px;flex-wrap:wrap}
   .playall{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(90deg,var(--accent2),var(--accent));
            color:#06231a;font-weight:700;border:0;border-radius:30px;padding:12px 24px;cursor:pointer;font-size:1rem}
   .playall:hover{filter:brightness(1.07)}
+  .search{flex:1;min-width:180px;max-width:340px;background:var(--surface);border:1px solid var(--border);
+          color:var(--text);border-radius:30px;padding:11px 18px;font-size:.95rem;outline:none}
+  .search:focus{border-color:var(--accent)}
   .count{color:var(--muted);font-size:.92rem}
 
   .list{margin-top:8px}
@@ -47,20 +50,27 @@
   .dur{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
   .dl{color:var(--muted);font-size:1.2rem;padding:4px 6px;border-radius:8px}
   .dl:hover{color:var(--accent);background:var(--surface)}
+  .rvol{display:none}
+  .row.on .rvol{display:inline-block;width:72px;flex:0 0 72px}
   .offline{padding:40px 0;color:var(--muted);text-align:center}
 
-  /* bottom player */
+  .pager{display:flex;gap:6px;justify-content:center;margin:24px 0 6px;flex-wrap:wrap}
+  .pager button{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:9px;
+                min-width:38px;height:38px;cursor:pointer;font-size:.92rem}
+  .pager button:hover{color:var(--text)}
+  .pager button.on{background:var(--accent);color:#06231a;border-color:var(--accent);font-weight:700}
+  .pager button:disabled{opacity:.4;cursor:default}
+
   .player{position:fixed;left:0;right:0;bottom:0;z-index:30;transform:translateY(120%);transition:.25s;
           background:rgba(8,20,28,.92);backdrop-filter:blur(16px);border-top:1px solid var(--border)}
   .player.show{transform:none}
   .player .pw{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
   .pCover{width:46px;height:46px;border-radius:10px;flex:0 0 46px}
-  .pInfo{min-width:0;width:190px}
+  .pInfo{min-width:0;width:180px}
   .pTitle{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .pPerf{color:var(--muted);font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pCtrls{display:flex;align-items:center;gap:6px}
-  .pCtrls button{background:none;border:0;color:var(--text);cursor:pointer;padding:6px;border-radius:50%;
-                 display:grid;place-items:center}
+  .pCtrls{display:flex;align-items:center;gap:4px}
+  .pCtrls button{background:none;border:0;color:var(--text);cursor:pointer;padding:6px;border-radius:50%;display:grid;place-items:center}
   .pCtrls button:hover{color:var(--accent)}
   .pCtrls .big{background:var(--text);color:#06231a;width:42px;height:42px}
   .pCtrls .big:hover{background:var(--accent)}
@@ -70,17 +80,15 @@
   input[type=range]{-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:#28414a;flex:1;cursor:pointer}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent)}
   input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--accent)}
-  .pDl{color:var(--muted);font-size:1.3rem;padding:4px 8px} .pDl:hover{color:var(--accent)}
   .pVol{display:flex;align-items:center;gap:6px}
   .pVol button{background:none;border:0;color:var(--muted);cursor:pointer;padding:2px;display:grid;place-items:center}
   .pVol button:hover{color:var(--accent)} .pVol svg{width:20px;height:20px;fill:currentColor}
   .pVol input[type=range]{width:84px;flex:0 0 84px}
-  .rvol{display:none}
-  .row.on .rvol{display:inline-block;width:72px;flex:0 0 72px}
+  .pDl{color:var(--muted);font-size:1.3rem;padding:4px 8px} .pDl:hover{color:var(--accent)}
   @media(max-width:640px){
     .pInfo{width:auto;flex:1} .pSeek{order:5;flex-basis:100%;width:100%}
     .pSeek span{display:none} .player .pw{flex-wrap:wrap;gap:10px} .pDl{display:none}
-    .pVol input[type=range]{width:64px;flex:0 0 64px} .row.on .rvol{display:none}
+    .pVol input[type=range]{width:60px;flex:0 0 60px} .row.on .rvol{display:none}
   }
 
   footer{border-top:1px solid var(--border);padding:26px 0;margin-top:30px;color:var(--muted);font-size:.9rem}
@@ -106,11 +114,15 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       <span data-i18n="mus_playall">Play all</span>
     </button>
+    <input class="search" id="search" type="text" oninput="applyFilter()" data-i18n-ph="mus_search" placeholder="Search tracks…">
     <span class="count" id="count"></span>
   </div>
 </div></header>
 
-<main class="wrap"><div class="list" id="list"></div></main>
+<main class="wrap">
+  <div class="list" id="list"></div>
+  <div class="pager" id="pager"></div>
+</main>
 
 <div class="player" id="player"><div class="pw">
   <img class="pCover" src="./icon.png" alt="">
@@ -119,6 +131,7 @@
     <button onclick="prev()" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
     <button class="big" id="pBtn" onclick="toggle()" aria-label="Play"></button>
     <button onclick="next()" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    <button onclick="randomPlay()" aria-label="Random" title="Random track"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
   </div>
   <div class="pSeek">
     <span id="cur">0:00</span>
@@ -141,12 +154,14 @@
 <script>
 const MEDIA="https://media.terr-a-spect.com";
 const ART="https://terr-a-spect.com/icon.png";
-const ICONS={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
-             pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
-             vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>',
-             mute:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 7.4 15 8.9l2.1 2.1L15 13.1l1.5 1.5 2.1-2.1 2.1 2.1 1.5-1.5L20.1 11l2.1-2.1-1.5-1.5L18.6 9.5z"/></svg>'};
-let tracks=[],cur=-1;
-const audio=new Audio();audio.preload="metadata";
+const PAGE=10;
+const ICONS={
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
+  vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>',
+  mute:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 7.4 15 8.9l2.1 2.1L15 13.1l1.5 1.5 2.1-2.1 2.1 2.1 1.5-1.5L20.1 11l2.1-2.1-1.5-1.5L18.6 9.5z"/></svg>'};
+let tracks=[], view=[], page=0, cur=-1, saveT=0;
+const audio=new Audio(); audio.preload="metadata";
 let vol=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(vol))vol=1; audio.volume=vol; let lastVol=vol||1;
 const $=id=>document.getElementById(id);
 const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
@@ -156,43 +171,74 @@ async function init(){
   try{
     const r=await fetch(MEDIA+"/api/tracks",{cache:"no-store"});
     tracks=(await r.json()).tracks||[];
-    render(); updCount();
   }catch(e){
     $('list').innerHTML='<div class="offline" data-i18n="mus_offline"></div>';
-    setLang(localStorage.getItem('ts_lang')||'en');
+    setLang(localStorage.getItem('ts_lang')||'en'); return;
   }
+  view=tracks.slice(); render(); syncVol();
+  // player завжди знизу: відновлюємо останній трек/позицію (новому юзеру — найсвіжіший)
+  const saved=JSON.parse(localStorage.getItem('ts_last')||'null');
+  let idx = saved ? tracks.findIndex(t=>t.msg_id===saved.msg_id) : -1;
+  if(idx<0 && tracks.length) idx=0;
+  if(idx>=0) loadTrack(idx, (saved&&tracks[idx].msg_id===saved.msg_id)?(saved.time||0):0, false);
+}
+
+function applyFilter(){
+  const qs=($('search').value||'').trim().toLowerCase();
+  view = qs ? tracks.filter(t=>(t.title||'').toLowerCase().includes(qs)||(t.performer||'').toLowerCase().includes(qs)) : tracks.slice();
+  page=0; render();
 }
 function render(){
-  $('list').innerHTML=tracks.map((t,i)=>`
-    <div class="row" data-i="${i}" onclick="play(${i})">
+  const pages=Math.max(1,Math.ceil(view.length/PAGE));
+  if(page>=pages)page=pages-1;
+  const slice=view.slice(page*PAGE,page*PAGE+PAGE);
+  $('list').innerHTML = slice.length ? slice.map(t=>{
+    const i=tracks.indexOf(t);
+    return `<div class="row" data-i="${i}" onclick="play(${i})">
       <div class="num"><span class="n">${i+1}</span><span class="pi">▶</span></div>
       <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
       <input class="rvol" type="range" min="0" max="100" value="100" onclick="event.stopPropagation()" oninput="setVol(this.value)" aria-label="Volume">
       <div class="dur">${fmt(t.duration)}</div>
       <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
-    </div>`).join('');
+    </div>`;}).join('') : '<div class="offline">'+tt('mus_nores')+'</div>';
+  renderPager(pages);
+  $('count').textContent=view.length+" "+tt('mus_tracks');
   mark(); syncVol();
 }
-function updCount(){$('count').textContent=tracks.length?tracks.length+" "+tt('mus_tracks'):"";}
-function play(i){
-  if(i===cur){toggle();return;}
-  cur=i;const t=tracks[i];
-  audio.src=MEDIA+t.stream;audio.play();
-  $('player').classList.add('show');
-  $('pTitle').textContent=t.title||'—';$('pPerf').textContent=t.performer||'';
-  $('pDl').href=MEDIA+t.download; mark(); setMs(t);
+function renderPager(pages){
+  if(pages<=1){$('pager').innerHTML='';return;}
+  let h=`<button ${page===0?'disabled':''} onclick="go(${page-1})">‹</button>`;
+  for(let p=0;p<pages;p++) h+=`<button class="${p===page?'on':''}" onclick="go(${p})">${p+1}</button>`;
+  h+=`<button ${page===pages-1?'disabled':''} onclick="go(${page+1})">›</button>`;
+  $('pager').innerHTML=h;
 }
-function toggle(){audio.paused?audio.play():audio.pause();}
-function next(){if(tracks.length)play((cur+1)%tracks.length);}
-function prev(){if(tracks.length)play((cur-1+tracks.length)%tracks.length);}
-function playAll(){if(tracks.length)play(0);}
+function go(p){page=p;render();window.scrollTo({top:0,behavior:'smooth'});}
+
+function loadTrack(i,seek,autoplay){
+  cur=i; const t=tracks[i];
+  audio.src=MEDIA+t.stream;
+  $('pTitle').textContent=t.title||'—'; $('pPerf').textContent=t.performer||'';
+  $('pDl').href=MEDIA+t.download; $('player').classList.add('show');
+  mark(); setMs(t); persist();
+  if(seek>0) audio.addEventListener('loadedmetadata',function(){audio.currentTime=seek;$('dur').textContent=fmt(audio.duration);},{once:true});
+  if(autoplay) audio.play();
+}
+function play(i){ if(i===cur){toggle();return;} loadTrack(i,0,true); }
+function toggle(){ if(cur<0&&tracks.length){loadTrack(0,0,true);return;} audio.paused?audio.play():audio.pause(); }
+function next(){ if(tracks.length) loadTrack((cur+1)%tracks.length,0,true); }
+function prev(){ if(tracks.length) loadTrack((cur-1+tracks.length)%tracks.length,0,true); }
+function randomPlay(){ if(!tracks.length)return; let i; do{i=Math.floor(Math.random()*tracks.length);}while(tracks.length>1&&i===cur); loadTrack(i,0,true); }
+function playAll(){ if(view.length) loadTrack(tracks.indexOf(view[0]),0,true); }
 function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
 function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
+function persist(){if(cur>=0)localStorage.setItem('ts_last',JSON.stringify({msg_id:tracks[cur].msg_id,time:Math.floor(audio.currentTime||0)}));}
+
 function setVol(v){vol=Math.max(0,Math.min(1,v/100));audio.volume=vol;if(vol>0)lastVol=vol;localStorage.setItem('ts_vol',vol);syncVol();}
 function toggleMute(){setVol(vol>0?0:(lastVol||1)*100);}
 function syncVol(){const p=Math.round(vol*100);const pv=$('vol');if(pv)pv.value=p;
   document.querySelectorAll('.rvol').forEach(r=>r.value=p);
   const mb=$('muteBtn');if(mb)mb.innerHTML=vol>0?ICONS.vol:ICONS.mute;}
+
 function setMs(t){
   if('mediaSession' in navigator){
     navigator.mediaSession.metadata=new MediaMetadata({title:t.title||'',artist:t.performer||'Terr-a-spect',
@@ -204,14 +250,15 @@ function setMs(t){
   }
 }
 audio.addEventListener('play',()=>$('pBtn').innerHTML=ICONS.pause);
-audio.addEventListener('pause',()=>$('pBtn').innerHTML=ICONS.play);
+audio.addEventListener('pause',()=>{$('pBtn').innerHTML=ICONS.play;persist();});
 audio.addEventListener('ended',next);
 audio.addEventListener('timeupdate',()=>{
   const d=audio.duration||0,c=audio.currentTime||0;
   $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
+  const now=Date.now(); if(now-saveT>3000){saveT=now;persist();}
 });
 $('pBtn').innerHTML=ICONS.play; syncVol();
-window.addEventListener('langchange',updCount);
+window.addEventListener('langchange',()=>{ if(tracks.length) render(); });
 init();
 </script>
 </body>
