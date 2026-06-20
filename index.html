@@ -104,8 +104,15 @@
   .pcard{flex:0 0 100%;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px 54px;overflow:hidden}
   .pc-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;color:#bfe9da}
   .pc-body{display:flex;gap:20px}
-  .pc-media{flex:0 0 42%;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#0c1b24}
+  .pc-media{flex:0 0 42%;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#0c1b24;cursor:pointer;position:relative}
   .pc-media img,.pc-media video{width:100%;height:100%;object-fit:cover;display:block;animation:kb 14s ease-in-out infinite alternate}
+  .pc-media:hover img,.pc-media:hover video{filter:brightness(1.06)}
+  .pc-playbig{position:absolute;inset:0;margin:auto;width:58px;height:58px;border-radius:50%;background:rgba(8,20,28,.72);display:grid;place-items:center;pointer-events:none}
+  .pc-playbig svg{width:26px;height:26px;fill:#fff}
+  .lb{position:fixed;inset:0;z-index:60;background:rgba(2,8,12,.93);display:none;align-items:center;justify-content:center;padding:20px}
+  .lb.show{display:flex}
+  .lb img,.lb video{max-width:96vw;max-height:92vh;border-radius:12px;display:block;box-shadow:0 12px 50px rgba(0,0,0,.6)}
+  .lb-close{position:fixed;top:14px;right:22px;background:none;border:0;color:#fff;font-size:2.4rem;line-height:1;cursor:pointer;z-index:61}
   @keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
   .pc-text{flex:1;color:#cdd9e0;font-size:.96rem;line-height:1.6;overflow:hidden;text-align:justify;hyphens:auto;
            display:-webkit-box;-webkit-line-clamp:10;-webkit-box-orient:vertical}
@@ -267,6 +274,11 @@
   </div>
 </div></footer>
 
+<div id="lightbox" class="lb" onclick="closeLb(event)">
+  <button class="lb-close" onclick="closeLb(event)" aria-label="Close">&times;</button>
+  <div id="lbInner"></div>
+</div>
+
 <script src="./i18n.js"></script>
 <script>
 const GMEDIA="https://media.terr-a-spect.com";
@@ -295,9 +307,10 @@ function gRender(){
   document.getElementById('cinner').innerHTML=gposts.map(p=>{
     const cap = gclean(p['caption_'+lang] || p.caption || '');
     const ttl = gclean(p['title_'+lang] || p.title || '');
+    const mUrl=GMEDIA+p.media;
     const media=p.media_type==='video'
-      ? `<video src="${GMEDIA+p.media}" controls preload="metadata" playsinline></video>`
-      : `<img src="${GMEDIA+p.media}" loading="lazy" alt="">`;
+      ? `<div class="pc-media" onclick="openLb('video','${mUrl}')"><video src="${mUrl}" muted preload="metadata" playsinline></video><span class="pc-playbig">${GIC.play}</span></div>`
+      : `<div class="pc-media" onclick="openLb('photo','${mUrl}')"><img src="${mUrl}" loading="lazy" alt=""></div>`;
     // низ: трек поста → клік веде на сторінку музики й вмикає його
     const foot = p.track_msg_id
       ? `<a class="pc-foot pc-mlink" href="./music.html?t=${p.track_msg_id}">
@@ -305,7 +318,7 @@ function gRender(){
            <span class="pc-go">${tt('gal_music')}</span></a>`
       : '';
     return `<div class="pcard"><div class="pc-title">${gesc(ttl)}</div>
-      <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(cap)}</div></div>
+      <div class="pc-body">${media}<div class="pc-text">${gesc(cap)}</div></div>
       ${foot}</div>`;
   }).join('');
   document.getElementById('cdots').innerHTML=gposts.map((_,i)=>`<button class="${i===gidx?'on':''}" onclick="gto(${i})"></button>`).join('');
@@ -319,6 +332,18 @@ function gto(i){gidx=(i+gposts.length)%gposts.length;gupd();gStart();}
 function cgo(d){gto(gidx+d);}
 function gStart(){clearInterval(gtimer);if(gposts.length>1)gtimer=setInterval(()=>gto(gidx+1),7000);}
 window.addEventListener('langchange',()=>{ if(gposts.length) gRender(); });   // підпис під мову
+function openLb(type,url){
+  document.getElementById('lbInner').innerHTML = type==='video'
+    ? `<video src="${url}" controls autoplay playsinline></video>`
+    : `<img src="${url}" alt="">`;
+  document.getElementById('lightbox').classList.add('show'); clearInterval(gtimer);
+}
+function closeLb(e){
+  if(e && !(e.target.id==='lightbox' || (e.target.classList && e.target.classList.contains('lb-close')))) return;
+  document.getElementById('lightbox').classList.remove('show');
+  document.getElementById('lbInner').innerHTML=''; gStart();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLb({target:{id:'lightbox'}}); });
 gInit();
 </script>
 </body>
