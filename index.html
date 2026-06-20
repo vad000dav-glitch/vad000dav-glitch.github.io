@@ -99,13 +99,13 @@
   .carousel{position:relative;margin-top:26px}
   .slides{overflow:hidden;border-radius:18px}
   .slides-inner{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1)}
-  .pcard{flex:0 0 100%;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;overflow:hidden}
+  .pcard{flex:0 0 100%;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px 54px;overflow:hidden}
   .pc-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;color:#bfe9da}
   .pc-body{display:flex;gap:20px}
   .pc-media{flex:0 0 42%;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#0c1b24}
   .pc-media img,.pc-media video{width:100%;height:100%;object-fit:cover;display:block;animation:kb 14s ease-in-out infinite alternate}
   @keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
-  .pc-text{flex:1;color:#cdd9e0;font-size:.96rem;line-height:1.6;overflow:hidden;
+  .pc-text{flex:1;color:#cdd9e0;font-size:.96rem;line-height:1.6;overflow:hidden;text-align:justify;hyphens:auto;
            display:-webkit-box;-webkit-line-clamp:10;-webkit-box-orient:vertical}
   .pc-foot{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
   .pc-play{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#06231a;border:0;width:42px;height:42px;border-radius:50%;cursor:pointer;display:grid;place-items:center;flex:0 0 42px}
@@ -114,11 +114,11 @@
   .pc-dl{color:var(--muted);font-size:1.3rem} .pc-dl:hover{color:var(--accent)}
   .cnav{position:absolute;top:42%;transform:translateY(-50%);background:rgba(8,20,28,.72);border:1px solid var(--border);
         color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.4rem;z-index:3;backdrop-filter:blur(6px)}
-  .cnav:hover{border-color:var(--accent);color:var(--accent)} .cnav.prev{left:-6px} .cnav.next{right:-6px}
+  .cnav:hover{border-color:var(--accent);color:var(--accent)} .cnav.prev{left:8px} .cnav.next{right:8px}
   .dots{display:flex;gap:8px;justify-content:center;margin-top:16px}
   .dots button{width:9px;height:9px;border-radius:50%;border:0;background:#2a4350;cursor:pointer;padding:0;transition:.2s}
   .dots button.on{background:var(--accent);width:22px;border-radius:5px}
-  @media(max-width:640px){.pc-body{flex-direction:column}.pc-media{flex:none;aspect-ratio:16/10}.cnav{display:none}}
+  @media(max-width:640px){.pc-body{flex-direction:column}.pc-media{flex:none;aspect-ratio:16/10}.cnav{display:none}.pcard{padding:22px 20px}}
 
   footer{border-top:1px solid var(--border);padding:34px 0;margin-top:30px;color:var(--muted);font-size:.92rem}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
