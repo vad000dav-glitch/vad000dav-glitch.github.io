@@ -35,6 +35,13 @@
           color:var(--text);border-radius:30px;padding:11px 18px;font-size:.95rem;outline:none}
   .search:focus{border-color:var(--accent)}
   .count{color:var(--muted);font-size:.92rem}
+  .sortbar{display:flex;align-items:center;gap:8px;margin:2px 0 12px;flex-wrap:wrap}
+  .slab{color:var(--muted);font-size:.85rem}
+  .sortbtn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 13px;font-size:.85rem;cursor:pointer}
+  .sortbtn:hover{color:var(--text)}
+  .sortbtn.on{color:#06231a;background:var(--accent);border-color:var(--accent);font-weight:700}
+  .sortbtn.on::after{content:' ↓'} .sortbtn.on[data-dir="asc"]::after{content:' ↑'}
+  .date{color:var(--muted);font-size:.82rem;width:96px;text-align:right;flex:0 0 96px}
 
   .list{margin-top:8px}
   .row{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:12px;cursor:pointer;transition:.12s}
@@ -90,6 +97,7 @@
     .pInfo{width:auto;flex:1} .pSeek{order:5;flex-basis:100%;width:100%}
     .pSeek span{display:none} .player .pw{flex-wrap:wrap;gap:10px} .pDl{display:none}
     .pVol input[type=range]{width:60px;flex:0 0 60px} .row.on .rvol{display:none}
+    .date{display:none}
   }
 
   footer{border-top:1px solid var(--border);padding:26px 0;margin-top:30px;color:var(--muted);font-size:.9rem}
@@ -121,6 +129,12 @@
 </div></header>
 
 <main class="wrap">
+  <div class="sortbar">
+    <span class="slab" data-i18n="mus_sort">Sort:</span>
+    <button class="sortbtn" data-k="no" onclick="setSort('no')">№</button>
+    <button class="sortbtn" data-k="name" onclick="setSort('name')" data-i18n="mus_byname">Name</button>
+    <button class="sortbtn" data-k="date" onclick="setSort('date')" data-i18n="mus_bydate">Date</button>
+  </div>
   <div class="list" id="list"></div>
   <div class="pager" id="pager"></div>
 </main>
@@ -165,6 +179,9 @@ let tracks=[], view=[], page=0, cur=-1, saveT=0;
 const audio=new Audio(); audio.preload="metadata";
 let vol=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(vol))vol=1; audio.volume=vol; let lastVol=vol||1;
 let shuffle=localStorage.getItem('ts_shuffle')==='1';
+let sortKey=localStorage.getItem('ts_sort')||'date'; let sortDir=parseInt(localStorage.getItem('ts_sortd'))||-1;
+const curLang=()=>localStorage.getItem('ts_lang')||(navigator.language||'en').slice(0,2);
+const fmtDate=s=>{if(!s)return'';try{return new Date(s).toLocaleDateString(curLang(),{year:'numeric',month:'short',day:'numeric'});}catch(e){return s.slice(0,10);}};
 const $=id=>document.getElementById(id);
 const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -177,7 +194,9 @@ async function init(){
     $('list').innerHTML='<div class="offline" data-i18n="mus_offline"></div>';
     setLang(localStorage.getItem('ts_lang')||'en'); return;
   }
-  view=tracks.slice(); render(); syncVol();
+  const asc=[...tracks].sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:a.msg_id-b.msg_id));
+  asc.forEach((t,i)=>t.no=i+1);          // стабільний № (найстаріший = 1)
+  applySort(); syncVol();
   // player завжди знизу: відновлюємо останній трек/позицію (новому юзеру — найсвіжіший)
   const saved=JSON.parse(localStorage.getItem('ts_last')||'null');
   let idx = saved ? tracks.findIndex(t=>t.msg_id===saved.msg_id) : -1;
@@ -197,8 +216,9 @@ function render(){
   $('list').innerHTML = slice.length ? slice.map(t=>{
     const i=tracks.indexOf(t);
     return `<div class="row" data-i="${i}" onclick="play(${i})">
-      <div class="num"><span class="n">${i+1}</span><span class="pi">▶</span></div>
+      <div class="num"><span class="n">${t.no}</span><span class="pi">▶</span></div>
       <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
+      <div class="date">${fmtDate(t.date)}</div>
       <input class="rvol" type="range" min="0" max="100" value="100" onclick="event.stopPropagation()" oninput="setVol(this.value)" aria-label="Volume">
       <div class="dur">${fmt(t.duration)}</div>
       <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
@@ -233,6 +253,21 @@ function next(){ if(tracks.length) loadTrack(pickNext(),0,true); }
 function prev(){ if(tracks.length) loadTrack((cur-1+tracks.length)%tracks.length,0,true); }
 function toggleShuffle(){ shuffle=!shuffle; localStorage.setItem('ts_shuffle',shuffle?'1':'0'); updShuf(); }
 function updShuf(){ const b=$('shufBtn'); if(b) b.classList.toggle('on',shuffle); }
+function setSort(k){ if(sortKey===k) sortDir=-sortDir; else { sortKey=k; sortDir=(k==='name')?1:(k==='date'?-1:1); }
+  localStorage.setItem('ts_sort',sortKey); localStorage.setItem('ts_sortd',sortDir); applySort(); }
+function applySort(){
+  const curId=cur>=0?tracks[cur].msg_id:null;
+  tracks.sort((a,b)=>{ let r;
+    if(sortKey==='name') r=(a.title||'').localeCompare(b.title||'');
+    else if(sortKey==='date') r=(a.date<b.date?-1:a.date>b.date?1:0);
+    else r=a.no-b.no;
+    return r*sortDir; });
+  if(curId!=null) cur=tracks.findIndex(t=>t.msg_id===curId);
+  applyFilter(); updSort();
+}
+function updSort(){ document.querySelectorAll('.sortbtn').forEach(b=>{
+  const on=b.dataset.k===sortKey; b.classList.toggle('on',on);
+  if(on) b.dataset.dir=sortDir>0?'asc':'desc'; else b.removeAttribute('data-dir'); }); }
 function playAll(){ if(view.length) loadTrack(tracks.indexOf(view[0]),0,true); }
 function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
 function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
@@ -262,7 +297,7 @@ audio.addEventListener('timeupdate',()=>{
   $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
   const now=Date.now(); if(now-saveT>3000){saveT=now;persist();}
 });
-$('pBtn').innerHTML=ICONS.play; syncVol(); updShuf();
+$('pBtn').innerHTML=ICONS.play; syncVol(); updShuf(); updSort();
 window.addEventListener('langchange',()=>{ if(tracks.length) render(); });
 init();
 </script>

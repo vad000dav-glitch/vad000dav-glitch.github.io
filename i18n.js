@@ -23,7 +23,8 @@
       mus_title:"Music", mus_sub:"Full-length original nature soundtracks. Listen right here — even in the background — or download.",
       mus_playall:"Play all", mus_loading:"Loading tracks…", mus_download:"Download",
       mus_tracks:"tracks", mus_offline:"Music is temporarily unavailable. Please try again in a moment.",
-      mus_search:"Search tracks…", mus_nores:"No tracks found."
+      mus_search:"Search tracks…", mus_nores:"No tracks found.",
+      mus_sort:"Sort:", mus_byname:"Name", mus_bydate:"Date"
     },
     uk: {
       nav_what:"Що ми робимо", nav_channels:"Канали", nav_data:"Твої дані",
@@ -47,7 +48,8 @@
       mus_title:"Музика", mus_sub:"Повні оригінальні треки про природу. Слухай прямо тут — навіть у фоні — або завантаж.",
       mus_playall:"Грати все", mus_loading:"Завантаження треків…", mus_download:"Завантажити",
       mus_tracks:"треків", mus_offline:"Музика тимчасово недоступна. Спробуй за мить.",
-      mus_search:"Пошук треків…", mus_nores:"Треків не знайдено."
+      mus_search:"Пошук треків…", mus_nores:"Треків не знайдено.",
+      mus_sort:"Сортувати:", mus_byname:"Назва", mus_bydate:"Дата"
     },
     es: {
       nav_what:"Qué hacemos", nav_channels:"Canales", nav_data:"Tus datos",
@@ -71,7 +73,8 @@
       mus_title:"Música", mus_sub:"Bandas sonoras originales completas de la naturaleza. Escucha aquí — incluso en segundo plano — o descarga.",
       mus_playall:"Reproducir todo", mus_loading:"Cargando pistas…", mus_download:"Descargar",
       mus_tracks:"pistas", mus_offline:"La música no está disponible por ahora. Inténtalo en un momento.",
-      mus_search:"Buscar pistas…", mus_nores:"No se encontraron pistas."
+      mus_search:"Buscar pistas…", mus_nores:"No se encontraron pistas.",
+      mus_sort:"Ordenar:", mus_byname:"Nombre", mus_bydate:"Fecha"
     },
     de: {
       nav_what:"Was wir tun", nav_channels:"Kanäle", nav_data:"Deine Daten",
@@ -95,7 +98,8 @@
       mus_title:"Musik", mus_sub:"Vollständige originale Natur-Soundtracks. Höre direkt hier — auch im Hintergrund — oder lade herunter.",
       mus_playall:"Alle abspielen", mus_loading:"Titel werden geladen…", mus_download:"Herunterladen",
       mus_tracks:"Titel", mus_offline:"Musik ist gerade nicht verfügbar. Bitte versuche es gleich erneut.",
-      mus_search:"Titel suchen…", mus_nores:"Keine Titel gefunden."
+      mus_search:"Titel suchen…", mus_nores:"Keine Titel gefunden.",
+      mus_sort:"Sortieren:", mus_byname:"Name", mus_bydate:"Datum"
     }
   };
   const LANGS = [["en","EN"],["uk","УКР"],["es","ES"],["de","DE"]];
