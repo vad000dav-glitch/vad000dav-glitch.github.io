@@ -112,6 +112,9 @@
   .pc-play svg{width:20px;height:20px;fill:currentColor}
   .pc-tt{font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
   .pc-dl{color:var(--muted);font-size:1.3rem} .pc-dl:hover{color:var(--accent)}
+  .pc-mlink{text-decoration:none;color:var(--text)}
+  .pc-mlink .pc-go{margin-left:auto;color:var(--muted);font-size:.9rem;white-space:nowrap}
+  .pc-mlink:hover .pc-go{color:var(--accent)} .pc-mlink:hover .pc-play{filter:brightness(1.08)}
   .cnav{position:absolute;top:42%;transform:translateY(-50%);background:rgba(8,20,28,.72);border:1px solid var(--border);
         color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.4rem;z-index:3;backdrop-filter:blur(6px)}
   .cnav:hover{border-color:var(--accent);color:var(--accent)} .cnav.prev{left:8px} .cnav.next{right:8px}
@@ -265,9 +268,8 @@
 <script src="./i18n.js"></script>
 <script>
 const GMEDIA="https://media.terr-a-spect.com";
-const GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>'};
-let gposts=[],gidx=0,gtimer=null,gcur=null;
-const gaudio=new Audio();gaudio.preload="none";
+const GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'};
+let gposts=[],gidx=0,gtimer=null,tsx=0;
 const gesc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const gclean=s=>(s||'')
   .replace(/\*\*([\s\S]*?)\*\*/g,'$1').replace(/__([\s\S]*?)__/g,'$1')
@@ -282,6 +284,8 @@ async function gInit(){
   const c=document.getElementById('carousel');
   c.addEventListener('mouseenter',()=>clearInterval(gtimer));
   c.addEventListener('mouseleave',gStart);
+  c.addEventListener('touchstart',e=>{tsx=e.changedTouches[0].clientX;clearInterval(gtimer);},{passive:true});
+  c.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tsx;if(Math.abs(dx)>40)cgo(dx<0?1:-1);gStart();},{passive:true});
 }
 function gHide(){const s=document.getElementById('latest');if(s)s.style.display='none';}
 function gRender(){
@@ -290,20 +294,20 @@ function gRender(){
     const cap = gclean(p['caption_'+lang] || p.caption || '');
     const ttl = gclean(p['title_'+lang] || p.title || '');
     const media=p.media_type==='video'
-      ? `<video src="${GMEDIA+p.media}" muted loop playsinline preload="metadata"></video>`
+      ? `<video src="${GMEDIA+p.media}" controls preload="metadata" playsinline></video>`
       : `<img src="${GMEDIA+p.media}" loading="lazy" alt="">`;
-    // низ: міні-плеєр тільки якщо є трек; нема треку → нема футера
-    const foot = p.track
-      ? `<div class="pc-foot"><button class="pc-play" data-p="${p.id}" onclick="gplay(${p.id},'${p.track}')">${GIC.play}</button>
-           <span class="pc-tt">${gesc(ttl)}</span>
-           <a class="pc-dl" href="${GMEDIA+p.track_download}" download aria-label="Download">⬇</a></div>`
+    // низ: трек поста → клік веде на сторінку музики й вмикає його
+    const foot = p.track_msg_id
+      ? `<a class="pc-foot pc-mlink" href="./music.html?t=${p.track_msg_id}">
+           <span class="pc-play">${GIC.play}</span><span class="pc-tt">${gesc(ttl)}</span>
+           <span class="pc-go">${tt('gal_music')}</span></a>`
       : '';
     return `<div class="pcard"><div class="pc-title">${gesc(ttl)}</div>
       <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(cap)}</div></div>
       ${foot}</div>`;
   }).join('');
   document.getElementById('cdots').innerHTML=gposts.map((_,i)=>`<button class="${i===gidx?'on':''}" onclick="gto(${i})"></button>`).join('');
-  gbtns(); gupd();
+  gupd();
 }
 function gupd(){
   document.getElementById('cinner').style.transform=`translateX(-${gidx*100}%)`;
@@ -312,9 +316,6 @@ function gupd(){
 function gto(i){gidx=(i+gposts.length)%gposts.length;gupd();gStart();}
 function cgo(d){gto(gidx+d);}
 function gStart(){clearInterval(gtimer);if(gposts.length>1)gtimer=setInterval(()=>gto(gidx+1),7000);}
-function gplay(id,url){if(gcur===id){gaudio.paused?gaudio.play():gaudio.pause();return;}gcur=id;gaudio.src=GMEDIA+url;gaudio.play();}
-function gbtns(){document.querySelectorAll('.pc-play').forEach(b=>{b.innerHTML=(+b.dataset.p===gcur&&!gaudio.paused)?GIC.pause:GIC.play;});}
-gaudio.addEventListener('play',gbtns);gaudio.addEventListener('pause',gbtns);
 window.addEventListener('langchange',()=>{ if(gposts.length) gRender(); });   // підпис під мову
 gInit();
 </script>

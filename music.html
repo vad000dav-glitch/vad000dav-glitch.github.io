@@ -202,6 +202,12 @@ async function init(){
   let idx = saved ? tracks.findIndex(t=>t.msg_id===saved.msg_id) : -1;
   if(idx<0 && tracks.length) idx=0;
   if(idx>=0) loadTrack(idx, (saved&&tracks[idx].msg_id===saved.msg_id)?(saved.time||0):0, false);
+  // глибоке посилання з галереї: ?t=<msg_id> → перейти на потрібну сторінку й увімкнути трек
+  const tp=new URLSearchParams(location.search).get('t');
+  if(tp){
+    const ti=tracks.findIndex(t=>String(t.msg_id)===tp);
+    if(ti>=0){ const pos=view.indexOf(tracks[ti]); if(pos>=0){page=Math.floor(pos/PAGE); render();} play(ti); }
+  }
 }
 
 function applyFilter(){
