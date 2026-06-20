@@ -45,7 +45,9 @@
   nav .links{margin-left:auto;display:flex;gap:22px}
   nav .links a{color:var(--muted);font-size:.95rem}
   nav .links a:hover{color:var(--text);text-decoration:none}
-  @media(max-width:640px){nav .links{display:none}}
+  .navmusic{color:var(--accent);font-weight:600;font-size:.95rem}
+  .navmusic:hover{text-decoration:none;filter:brightness(1.12)}
+  @media(max-width:640px){nav .links{display:none} .navmusic{margin-left:auto}}
 
   /* hero */
   header.hero{padding:84px 0 64px;text-align:center}
@@ -137,12 +139,12 @@
   <img src="./icon.png" alt="Terr-a-spect logo">
   <span class="brand">Terr-a-spect</span>
   <div class="links">
-    <a href="./music.html" data-i18n="nav_music">Music</a>
     <a href="#what" data-i18n="nav_what">What we do</a>
     <a href="#channels" data-i18n="nav_channels">Channels</a>
     <a href="#data" data-i18n="nav_data">Your data</a>
     <a href="mailto:vad000dav@gmail.com" data-i18n="nav_contact">Contact</a>
   </div>
+  <a class="navmusic" href="./music.html" data-i18n="nav_music">Music</a>
 </div></nav>
 
 <header class="hero"><div class="wrap">
