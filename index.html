@@ -280,23 +280,24 @@ async function gInit(){
 }
 function gHide(){const s=document.getElementById('latest');if(s)s.style.display='none';}
 function gRender(){
+  const lang=localStorage.getItem('ts_lang')||'en';
   document.getElementById('cinner').innerHTML=gposts.map(p=>{
+    const cap = p['caption_'+lang] || p.caption || '';
     const media=p.media_type==='video'
       ? `<video src="${GMEDIA+p.media}" muted loop playsinline preload="metadata"></video>`
       : `<img src="${GMEDIA+p.media}" loading="lazy" alt="">`;
-    const foot=p.track
-      ? `<button class="pc-play" data-p="${p.id}" onclick="gplay(${p.id},'${p.track}')">${GIC.play}</button>
-         <span class="pc-tt">${gesc(p.title)}</span>
-         <a class="pc-dl" href="${GMEDIA+p.track_download}" download aria-label="Download">⬇</a>`
-      : `<span class="pc-tt">${gesc(p.title)}</span>
-         <a class="pc-dl" href="./music.html" style="font-size:.92rem" data-i18n="gal_music">Music →</a>`;
+    // низ: міні-плеєр тільки якщо є трек; нема треку → нема футера
+    const foot = p.track
+      ? `<div class="pc-foot"><button class="pc-play" data-p="${p.id}" onclick="gplay(${p.id},'${p.track}')">${GIC.play}</button>
+           <span class="pc-tt">${gesc(p.title)}</span>
+           <a class="pc-dl" href="${GMEDIA+p.track_download}" download aria-label="Download">⬇</a></div>`
+      : '';
     return `<div class="pcard"><div class="pc-title">${gesc(p.title)}</div>
-      <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(p.caption)}</div></div>
-      <div class="pc-foot">${foot}</div></div>`;
+      <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(cap)}</div></div>
+      ${foot}</div>`;
   }).join('');
   document.getElementById('cdots').innerHTML=gposts.map((_,i)=>`<button class="${i===gidx?'on':''}" onclick="gto(${i})"></button>`).join('');
-  if(window.setLang)setLang(localStorage.getItem('ts_lang')||'en'); // підхопити data-i18n у нових вузлах
-  gupd();
+  gbtns(); gupd();
 }
 function gupd(){
   document.getElementById('cinner').style.transform=`translateX(-${gidx*100}%)`;
@@ -308,6 +309,7 @@ function gStart(){clearInterval(gtimer);if(gposts.length>1)gtimer=setInterval(()
 function gplay(id,url){if(gcur===id){gaudio.paused?gaudio.play():gaudio.pause();return;}gcur=id;gaudio.src=GMEDIA+url;gaudio.play();}
 function gbtns(){document.querySelectorAll('.pc-play').forEach(b=>{b.innerHTML=(+b.dataset.p===gcur&&!gaudio.paused)?GIC.pause:GIC.play;});}
 gaudio.addEventListener('play',gbtns);gaudio.addEventListener('pause',gbtns);
+window.addEventListener('langchange',()=>{ if(gposts.length) gRender(); });   // підпис під мову
 gInit();
 </script>
 </body>

@@ -111,7 +111,8 @@
   function pick() {
     const s = localStorage.getItem("ts_lang");
     if (s && DICT[s]) return s;
-    const n = (navigator.language || "en").slice(0, 2).toLowerCase();
+    let n = (navigator.language || "en").slice(0, 2).toLowerCase();
+    if (n === "ru") n = "uk";          // російська мова пристрою → українська за замовчуванням
     return DICT[n] ? n : "en";
   }
   function apply(lang) {
