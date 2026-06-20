@@ -269,6 +269,11 @@ const GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause
 let gposts=[],gidx=0,gtimer=null,gcur=null;
 const gaudio=new Audio();gaudio.preload="none";
 const gesc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const gclean=s=>(s||'')
+  .replace(/\*\*([\s\S]*?)\*\*/g,'$1').replace(/__([\s\S]*?)__/g,'$1')
+  .replace(/\*([^*\n]+)\*/g,'$1').replace(/`([^`]+)`/g,'$1')
+  .replace(/^\s{0,3}#{1,6}\s+/gm,'').replace(/^\s*>\s?/gm,'')
+  .replace(/[*_`]{1,}/g,'').trim();
 async function gInit(){
   let d; try{ d=await (await fetch(GMEDIA+"/api/posts",{cache:"no-store"})).json(); }catch(e){ return gHide(); }
   gposts=(d.posts||[]).slice(0,3);
@@ -282,17 +287,18 @@ function gHide(){const s=document.getElementById('latest');if(s)s.style.display=
 function gRender(){
   const lang=localStorage.getItem('ts_lang')||'en';
   document.getElementById('cinner').innerHTML=gposts.map(p=>{
-    const cap = p['caption_'+lang] || p.caption || '';
+    const cap = gclean(p['caption_'+lang] || p.caption || '');
+    const ttl = gclean(p['title_'+lang] || p.title || '');
     const media=p.media_type==='video'
       ? `<video src="${GMEDIA+p.media}" muted loop playsinline preload="metadata"></video>`
       : `<img src="${GMEDIA+p.media}" loading="lazy" alt="">`;
     // низ: міні-плеєр тільки якщо є трек; нема треку → нема футера
     const foot = p.track
       ? `<div class="pc-foot"><button class="pc-play" data-p="${p.id}" onclick="gplay(${p.id},'${p.track}')">${GIC.play}</button>
-           <span class="pc-tt">${gesc(p.title)}</span>
+           <span class="pc-tt">${gesc(ttl)}</span>
            <a class="pc-dl" href="${GMEDIA+p.track_download}" download aria-label="Download">⬇</a></div>`
       : '';
-    return `<div class="pcard"><div class="pc-title">${gesc(p.title)}</div>
+    return `<div class="pcard"><div class="pc-title">${gesc(ttl)}</div>
       <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(cap)}</div></div>
       ${foot}</div>`;
   }).join('');
