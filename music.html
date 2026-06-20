@@ -58,8 +58,7 @@
   .dl{color:var(--muted);font-size:1.2rem;padding:4px 6px;border-radius:8px}
   .dl:hover{color:var(--accent);background:var(--surface)}
   .rvol{display:none}
-  .row.on .rvol{display:inline-block;width:96px;flex:0 0 96px}
-  .row.on .date{display:none}      /* на активному рядку повзунок займає місце дати */
+  .row.on .rvol{display:inline-block;width:80px;flex:0 0 80px}   /* зліва від дати */
   .offline{padding:40px 0;color:var(--muted);text-align:center}
 
   .pager{display:flex;gap:6px;justify-content:center;margin:24px 0 6px;flex-wrap:wrap}
@@ -225,8 +224,8 @@ function render(){
     return `<div class="row" data-i="${i}" onclick="play(${i})">
       <div class="num"><span class="n">${t.no}</span><span class="pi">▶</span></div>
       <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
-      <div class="date">${fmtDate(t.date)}</div>
       <input class="rvol" type="range" min="0" max="100" value="100" onclick="event.stopPropagation()" oninput="setVol(this.value)" aria-label="Volume">
+      <div class="date">${fmtDate(t.date)}</div>
       <div class="dur">${fmt(t.duration)}</div>
       <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
     </div>`;}).join('') : '<div class="offline">'+tt('mus_nores')+'</div>';
