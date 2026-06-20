@@ -24,7 +24,8 @@
       mus_playall:"Play all", mus_loading:"Loading tracks…", mus_download:"Download",
       mus_tracks:"tracks", mus_offline:"Music is temporarily unavailable. Please try again in a moment.",
       mus_search:"Search tracks…", mus_nores:"No tracks found.",
-      mus_sort:"Sort:", mus_byname:"Name", mus_bydate:"Date"
+      mus_sort:"Sort:", mus_byname:"Name", mus_bydate:"Date",
+      gal_eyebrow:"Latest", gal_h2:"Recent posts", gal_music:"Music →"
     },
     uk: {
       nav_what:"Що ми робимо", nav_channels:"Канали", nav_data:"Твої дані",
@@ -49,7 +50,8 @@
       mus_playall:"Грати все", mus_loading:"Завантаження треків…", mus_download:"Завантажити",
       mus_tracks:"треків", mus_offline:"Музика тимчасово недоступна. Спробуй за мить.",
       mus_search:"Пошук треків…", mus_nores:"Треків не знайдено.",
-      mus_sort:"Сортувати:", mus_byname:"Назва", mus_bydate:"Дата"
+      mus_sort:"Сортувати:", mus_byname:"Назва", mus_bydate:"Дата",
+      gal_eyebrow:"Свіже", gal_h2:"Останні пости", gal_music:"Музика →"
     },
     es: {
       nav_what:"Qué hacemos", nav_channels:"Canales", nav_data:"Tus datos",
@@ -74,7 +76,8 @@
       mus_playall:"Reproducir todo", mus_loading:"Cargando pistas…", mus_download:"Descargar",
       mus_tracks:"pistas", mus_offline:"La música no está disponible por ahora. Inténtalo en un momento.",
       mus_search:"Buscar pistas…", mus_nores:"No se encontraron pistas.",
-      mus_sort:"Ordenar:", mus_byname:"Nombre", mus_bydate:"Fecha"
+      mus_sort:"Ordenar:", mus_byname:"Nombre", mus_bydate:"Fecha",
+      gal_eyebrow:"Lo último", gal_h2:"Publicaciones recientes", gal_music:"Música →"
     },
     de: {
       nav_what:"Was wir tun", nav_channels:"Kanäle", nav_data:"Deine Daten",
@@ -99,7 +102,8 @@
       mus_playall:"Alle abspielen", mus_loading:"Titel werden geladen…", mus_download:"Herunterladen",
       mus_tracks:"Titel", mus_offline:"Musik ist gerade nicht verfügbar. Bitte versuche es gleich erneut.",
       mus_search:"Titel suchen…", mus_nores:"Keine Titel gefunden.",
-      mus_sort:"Sortieren:", mus_byname:"Name", mus_bydate:"Datum"
+      mus_sort:"Sortieren:", mus_byname:"Name", mus_bydate:"Datum",
+      gal_eyebrow:"Neu", gal_h2:"Neueste Beiträge", gal_music:"Musik →"
     }
   };
   const LANGS = [["en","EN"],["uk","УКР"],["es","ES"],["de","DE"]];

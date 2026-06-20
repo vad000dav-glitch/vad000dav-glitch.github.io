@@ -95,6 +95,31 @@
   .databox li{margin:6px 0}
   .legal-links{display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}
 
+  /* posts carousel */
+  .carousel{position:relative;margin-top:26px}
+  .slides{overflow:hidden;border-radius:18px}
+  .slides-inner{display:flex;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+  .pcard{flex:0 0 100%;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px;overflow:hidden}
+  .pc-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;color:#bfe9da}
+  .pc-body{display:flex;gap:20px}
+  .pc-media{flex:0 0 42%;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#0c1b24}
+  .pc-media img,.pc-media video{width:100%;height:100%;object-fit:cover;display:block;animation:kb 14s ease-in-out infinite alternate}
+  @keyframes kb{from{transform:scale(1)}to{transform:scale(1.09)}}
+  .pc-text{flex:1;color:#cdd9e0;font-size:.96rem;line-height:1.6;overflow:hidden;
+           display:-webkit-box;-webkit-line-clamp:10;-webkit-box-orient:vertical}
+  .pc-foot{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+  .pc-play{background:linear-gradient(90deg,var(--accent2),var(--accent));color:#06231a;border:0;width:42px;height:42px;border-radius:50%;cursor:pointer;display:grid;place-items:center;flex:0 0 42px}
+  .pc-play svg{width:20px;height:20px;fill:currentColor}
+  .pc-tt{font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+  .pc-dl{color:var(--muted);font-size:1.3rem} .pc-dl:hover{color:var(--accent)}
+  .cnav{position:absolute;top:42%;transform:translateY(-50%);background:rgba(8,20,28,.72);border:1px solid var(--border);
+        color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.4rem;z-index:3;backdrop-filter:blur(6px)}
+  .cnav:hover{border-color:var(--accent);color:var(--accent)} .cnav.prev{left:-6px} .cnav.next{right:-6px}
+  .dots{display:flex;gap:8px;justify-content:center;margin-top:16px}
+  .dots button{width:9px;height:9px;border-radius:50%;border:0;background:#2a4350;cursor:pointer;padding:0;transition:.2s}
+  .dots button.on{background:var(--accent);width:22px;border-radius:5px}
+  @media(max-width:640px){.pc-body{flex-direction:column}.pc-media{flex:none;aspect-ratio:16/10}.cnav{display:none}}
+
   footer{border-top:1px solid var(--border);padding:34px 0;margin-top:30px;color:var(--muted);font-size:.92rem}
   footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
   .langs{display:flex;gap:6px;align-items:center}
@@ -127,6 +152,17 @@
     <a class="btn ghost" href="#channels" data-i18n="hero_cta_all">All our channels</a>
   </div>
 </div></header>
+
+<section id="latest"><div class="wrap">
+  <div class="eyebrow" data-i18n="gal_eyebrow">Latest</div>
+  <h2 data-i18n="gal_h2">Recent posts</h2>
+  <div class="carousel" id="carousel">
+    <div class="slides"><div class="slides-inner" id="cinner"></div></div>
+    <button class="cnav prev" onclick="cgo(-1)" aria-label="Previous">‹</button>
+    <button class="cnav next" onclick="cgo(1)" aria-label="Next">›</button>
+    <div class="dots" id="cdots"></div>
+  </div>
+</div></section>
 
 <section id="what"><div class="wrap">
   <div class="eyebrow" data-i18n="what_eyebrow">What we do</div>
@@ -227,5 +263,52 @@
 </div></footer>
 
 <script src="./i18n.js"></script>
+<script>
+const GMEDIA="https://media.terr-a-spect.com";
+const GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>'};
+let gposts=[],gidx=0,gtimer=null,gcur=null;
+const gaudio=new Audio();gaudio.preload="none";
+const gesc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function gInit(){
+  let d; try{ d=await (await fetch(GMEDIA+"/api/posts",{cache:"no-store"})).json(); }catch(e){ return gHide(); }
+  gposts=(d.posts||[]).slice(0,3);
+  if(!gposts.length) return gHide();
+  gRender(); gStart();
+  const c=document.getElementById('carousel');
+  c.addEventListener('mouseenter',()=>clearInterval(gtimer));
+  c.addEventListener('mouseleave',gStart);
+}
+function gHide(){const s=document.getElementById('latest');if(s)s.style.display='none';}
+function gRender(){
+  document.getElementById('cinner').innerHTML=gposts.map(p=>{
+    const media=p.media_type==='video'
+      ? `<video src="${GMEDIA+p.media}" muted loop playsinline preload="metadata"></video>`
+      : `<img src="${GMEDIA+p.media}" loading="lazy" alt="">`;
+    const foot=p.track
+      ? `<button class="pc-play" data-p="${p.id}" onclick="gplay(${p.id},'${p.track}')">${GIC.play}</button>
+         <span class="pc-tt">${gesc(p.title)}</span>
+         <a class="pc-dl" href="${GMEDIA+p.track_download}" download aria-label="Download">⬇</a>`
+      : `<span class="pc-tt">${gesc(p.title)}</span>
+         <a class="pc-dl" href="./music.html" style="font-size:.92rem" data-i18n="gal_music">Music →</a>`;
+    return `<div class="pcard"><div class="pc-title">${gesc(p.title)}</div>
+      <div class="pc-body"><div class="pc-media">${media}</div><div class="pc-text">${gesc(p.caption)}</div></div>
+      <div class="pc-foot">${foot}</div></div>`;
+  }).join('');
+  document.getElementById('cdots').innerHTML=gposts.map((_,i)=>`<button class="${i===gidx?'on':''}" onclick="gto(${i})"></button>`).join('');
+  if(window.setLang)setLang(localStorage.getItem('ts_lang')||'en'); // підхопити data-i18n у нових вузлах
+  gupd();
+}
+function gupd(){
+  document.getElementById('cinner').style.transform=`translateX(-${gidx*100}%)`;
+  document.querySelectorAll('#cdots button').forEach((b,i)=>b.classList.toggle('on',i===gidx));
+}
+function gto(i){gidx=(i+gposts.length)%gposts.length;gupd();gStart();}
+function cgo(d){gto(gidx+d);}
+function gStart(){clearInterval(gtimer);if(gposts.length>1)gtimer=setInterval(()=>gto(gidx+1),7000);}
+function gplay(id,url){if(gcur===id){gaudio.paused?gaudio.play():gaudio.pause();return;}gcur=id;gaudio.src=GMEDIA+url;gaudio.play();}
+function gbtns(){document.querySelectorAll('.pc-play').forEach(b=>{b.innerHTML=(+b.dataset.p===gcur&&!gaudio.paused)?GIC.pause:GIC.play;});}
+gaudio.addEventListener('play',gbtns);gaudio.addEventListener('pause',gbtns);
+gInit();
+</script>
 </body>
 </html>
