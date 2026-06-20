@@ -120,7 +120,7 @@
   .cnav{position:absolute;top:42%;transform:translateY(-50%);background:rgba(8,20,28,.72);border:1px solid var(--border);
         color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.4rem;z-index:3;backdrop-filter:blur(6px)}
   .cnav:hover{border-color:var(--accent);color:var(--accent)} .cnav.prev{left:8px} .cnav.next{right:8px}
-  .dots{display:flex;gap:8px;justify-content:center;margin-top:16px}
+  .dots{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
   .dots button{width:9px;height:9px;border-radius:50%;border:0;background:#2a4350;cursor:pointer;padding:0;transition:.2s}
   .dots button.on{background:var(--accent);width:22px;border-radius:5px}
   @media(max-width:640px){.pc-body{flex-direction:column}.pc-media{flex:none;aspect-ratio:16/10}.cnav{display:none}.pcard{padding:22px 20px}}
@@ -280,7 +280,7 @@ const gclean=s=>(s||'')
   .replace(/[*_`]{1,}/g,'').trim();
 async function gInit(){
   let d; try{ d=await (await fetch(GMEDIA+"/api/posts",{cache:"no-store"})).json(); }catch(e){ return gHide(); }
-  gposts=(d.posts||[]).slice(0,3);
+  gposts=(d.posts||[]);
   if(!gposts.length) return gHide();
   gRender(); gStart();
   const c=document.getElementById('carousel');
