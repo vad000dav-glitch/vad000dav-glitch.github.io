@@ -141,3 +141,47 @@
     apply(pick());
   });
 })();
+
+/* --- секретний вхід в адмінку: лого = тригер; підтвердження в Telegram → сайт сам перекине --- */
+(function () {
+  const ADM = "https://admin.terr-a-spect.com";
+  async function fp() {
+    const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+    ctx.textBaseline = 'top'; ctx.font = '14px Arial'; ctx.fillStyle = '#069'; ctx.fillText('terr-a-spect-fp', 2, 2);
+    let w = ''; try { const gl = document.createElement('canvas').getContext('webgl');
+      const d = gl.getExtension('WEBGL_debug_renderer_info');
+      w = gl.getParameter(d.UNMASKED_RENDERER_WEBGL) + '|' + gl.getParameter(gl.VERSION); } catch (e) {}
+    const p = [navigator.userAgent, navigator.platform, (navigator.languages || []).join(','),
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+      navigator.hardwareConcurrency, navigator.deviceMemory, navigator.maxTouchPoints,
+      cv.toDataURL(), w].join('~');
+    const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(p));
+    return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+  }
+  async function login(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    let f; try { f = await fp(); } catch (_) { return false; }
+    let r;
+    try { r = await fetch(ADM + '/auth/init', { method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fp: f }) }); }
+    catch (_) { return false; }
+    if (r.status === 429) return false;
+    let d; try { d = await r.json(); } catch (_) { return false; }
+    if (d.ok) { location.href = ADM + '/admin'; return false; }
+    if (d.pending) { localStorage.setItem('adm_pending', JSON.stringify({ id: d.login_id, t: Date.now() })); poll(); }
+    return false;   // лого нікуди не веде — лише тригер
+  }
+  function poll() {
+    let p; try { p = JSON.parse(localStorage.getItem('adm_pending') || 'null'); } catch (_) { p = null; }
+    if (!p) return;
+    if (Date.now() - p.t > 6 * 60000) { localStorage.removeItem('adm_pending'); return; }
+    fetch(ADM + '/auth/status/' + p.id, { credentials: 'include' }).then(r => r.json()).then(s => {
+      if (s.ok) { localStorage.removeItem('adm_pending'); location.href = ADM + '/admin'; return; }
+      if (s.status === 'denied' || s.status === 'expired') { localStorage.removeItem('adm_pending'); return; }
+      setTimeout(poll, 2500);
+    }).catch(() => setTimeout(poll, 4000));
+  }
+  window.adminLogin = login;
+  document.addEventListener('DOMContentLoaded', poll);   // продовжити очікування на будь-якій сторінці
+})();
