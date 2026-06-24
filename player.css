@@ -8,10 +8,11 @@
 /* ── кругла кнопка (mini) ── */
 .tas-fab{width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
   background:linear-gradient(135deg,var(--pa2),var(--pa));color:#06231a;
-  display:grid;place-items:center;box-shadow:0 8px 26px rgba(0,0,0,.45);transition:transform .15s,box-shadow .15s}
+  display:grid;place-items:center;box-shadow:0 8px 26px rgba(0,0,0,.45);
+  transition:transform .34s cubic-bezier(.34,1.56,.64,1),opacity .24s ease,box-shadow .15s}
 .tas-fab:hover{transform:scale(1.06);box-shadow:0 10px 30px rgba(0,0,0,.55)}
 .tas-fab svg{width:24px;height:24px;fill:currentColor}
-.tas-open .tas-fab{display:none}
+.tas-open .tas-fab{opacity:0;transform:scale(.35) rotate(-35deg);pointer-events:none}
 /* індикатор «грає» на згорнутій кнопці (еквалайзер) */
 .tas-eq{display:none;align-items:flex-end;gap:3px;height:20px}
 .tas-playing.tas-mini .tas-fab .tas-ico{display:none}
@@ -22,14 +23,28 @@
 @keyframes tas-bounce{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
 
 /* ── квадратна панель (open) ── */
-.tas-panel{display:none;width:280px;border-radius:16px;overflow:hidden;
+/* морфінг: коло (FAB) «виростає» з кутка в квадратну панель — пружинистий spring + морф радіуса */
+.tas-panel{position:absolute;right:0;bottom:0;width:280px;overflow:hidden;
   background:rgba(8,20,28,.96);backdrop-filter:blur(16px);border:1px solid var(--pbord);
-  box-shadow:0 14px 40px rgba(0,0,0,.5)}
-.tas-open .tas-panel{display:block}
+  box-shadow:0 18px 50px rgba(0,0,0,.55);transform-origin:100% 100%;
+  opacity:0;visibility:hidden;transform:scale(.26) translateY(8px);border-radius:30px;
+  transition:transform .46s cubic-bezier(.34,1.5,.5,1),opacity .3s ease,border-radius .46s ease,visibility 0s linear .46s}
+.tas-open .tas-panel{opacity:1;visibility:visible;transform:none;border-radius:16px;
+  transition:transform .52s cubic-bezier(.32,1.55,.45,1),opacity .28s ease,border-radius .52s ease,visibility 0s}
+/* контент заїжджає зі сходинкою-затримкою — преміум-відчуття */
+.tas-panel .tas-top,.tas-panel .tas-seek,.tas-panel .tas-ctrls{opacity:0;transform:translateY(10px);
+  transition:opacity .3s ease,transform .34s cubic-bezier(.22,1,.36,1)}
+.tas-open .tas-panel .tas-top{opacity:1;transform:none;transition-delay:.10s}
+.tas-open .tas-panel .tas-seek{opacity:1;transform:none;transition-delay:.16s}
+.tas-open .tas-panel .tas-ctrls{opacity:1;transform:none;transition-delay:.22s}
+@media(prefers-reduced-motion:reduce){
+  .tas-fab,.tas-panel,.tas-panel .tas-top,.tas-panel .tas-seek,.tas-panel .tas-ctrls{transition-duration:.01ms!important}
+}
 .tas-top{display:flex;align-items:center;gap:10px;padding:12px 12px 8px}
 .tas-cover{width:46px;height:46px;border-radius:10px;flex:0 0 46px;object-fit:cover;background:#0d2029}
 .tas-meta{min-width:0;flex:1}
-.tas-title{font-weight:700;color:var(--ptxt);font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tas-title{font-weight:700;color:var(--ptxt);font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:color .15s}
+.tas-title:hover{color:var(--pa)}
 .tas-perf{color:var(--pmut);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tas-min{background:none;border:0;color:var(--pmut);cursor:pointer;font-size:1.1rem;line-height:1;padding:4px;border-radius:8px;flex:0 0 auto}
 .tas-min:hover{color:var(--ptxt)}
@@ -47,8 +62,6 @@
 .tas-ctrls .tas-big{background:var(--ptxt);color:#06231a;width:46px;height:46px}
 .tas-ctrls .tas-big:hover{background:var(--pa)} .tas-ctrls .tas-big svg{width:24px;height:24px}
 .tas-ctrls .tas-shuf.on{color:var(--pa);background:rgba(95,227,180,.16)}
-.tas-dl{margin-left:auto;color:var(--pmut);font-size:1.2rem;text-decoration:none;padding:4px 6px}
-.tas-dl:hover{color:var(--pa)}
 
 @media(max-width:520px){
   #tas-player{right:12px;bottom:12px}

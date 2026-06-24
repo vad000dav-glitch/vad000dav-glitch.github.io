@@ -9,8 +9,9 @@
   var HOVER = !!(window.matchMedia && window.matchMedia('(hover:hover)').matches);
 
   var IC = {
-    play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
-    pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
+    // заокруглений, оптично відцентрований трикутник — м'який «aurora» стиль сайту
+    play:'<svg viewBox="0 0 24 24"><path d="M9 7.5c0-1.27 1.38-2.06 2.48-1.42l7.79 4.5c1.1.63 1.1 2.21 0 2.84l-7.79 4.5C10.38 18.56 9 17.77 9 16.5V7.5z"/></svg>',
+    pause:'<svg viewBox="0 0 24 24"><rect x="6.6" y="5.4" width="3.7" height="13.2" rx="1.7"/><rect x="13.7" y="5.4" width="3.7" height="13.2" rx="1.7"/></svg>',
     prev:'<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>',
     next:'<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg>',
     shuf:'<svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>'
@@ -42,7 +43,6 @@
         +'<button class="tas-big tas-toggle" type="button" aria-label="Грати">'+IC.play+'</button>'
         +'<button class="tas-next" type="button" aria-label="Вперед">'+IC.next+'</button>'
         +'<button class="tas-shuf" type="button" aria-label="Випадковий порядок" title="Випадковий трек">'+IC.shuf+'</button>'
-        +'<a class="tas-dl" href="#" download aria-label="Завантажити">⬇</a>'
       +'</div>'
     +'</div>';
   function mount(){ if(!document.body.contains(root)) document.body.appendChild(root); }
@@ -51,7 +51,7 @@
   var $ = function(c){ return root.querySelector(c); };
   var elTitle=$('.tas-title'), elPerf=$('.tas-perf'), elCover=$('.tas-cover'),
       elRange=$('.tas-range'), elCur=$('.tas-cur'), elDur=$('.tas-dur'),
-      elToggle=$('.tas-toggle'), elShuf=$('.tas-shuf'), elDl=$('.tas-dl');
+      elToggle=$('.tas-toggle'), elShuf=$('.tas-shuf');
 
   var fmt=function(s){ s=Math.round(s||0); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); };
 
@@ -78,13 +78,29 @@
   elRange.addEventListener('input', function(){ if(audio.duration) audio.currentTime=this.value/1000*audio.duration; armIdle(); });
   function updShuf(){ elShuf.classList.toggle('on', shuffle); }
 
+  // ── клік по назві → сторінка музики, поточний трек виділено й прокручено у в'юпорт ──
+  var wantScroll=false;
+  function scrollActive(tries){
+    tries=tries||0; if(cur<0) return;
+    var row=document.querySelector('[data-msg="'+tracks[cur].msg_id+'"]');
+    if(row){ row.scrollIntoView({behavior:'smooth',block:'center'}); }
+    else if(tries<20){ setTimeout(function(){ scrollActive(tries+1); }, 150); }
+  }
+  function gotoMusic(){
+    if(cur<0) return;
+    if(/music\.html$/.test(location.pathname)){ scrollActive(0); return; }
+    wantScroll=true;
+    navigate((location.origin||'https://terr-a-spect.com')+'/music.html', true);
+  }
+  elTitle.addEventListener('click', gotoMusic);
+  window.addEventListener('tas:pageload', function(){ if(wantScroll){ wantScroll=false; scrollActive(0); } });
+
   // ── ядро ──
   function loadTrack(i, seek, autoplay){
     if(i<0 || i>=tracks.length) return;
     cur=i; var t=tracks[i];
     audio.src=MEDIA+t.stream;
     elTitle.textContent=t.title||'—'; elPerf.textContent=t.performer||'Terr-a-spect';
-    elDl.href=MEDIA+t.download;
     setMs(t); persist(); emit();
     if(seek>0){ audio.addEventListener('loadedmetadata', function(){ try{audio.currentTime=seek;}catch(e){} elDur.textContent=fmt(audio.duration); }, {once:true}); }
     if(autoplay){ var p=audio.play(); if(p&&p.catch) p.catch(function(){}); }
