@@ -13,6 +13,7 @@
 <meta property="og:url" content="https://terr-a-spect.com/">
 <meta property="og:image" content="https://terr-a-spect.com/icon.png">
 <link rel="icon" type="image/png" href="./icon.png">
+<link rel="stylesheet" href="./player.css">
 <link rel="apple-touch-icon" href="./icon.png">
 <style>
   :root{
@@ -281,11 +282,12 @@
 
 <script src="./i18n.js"></script>
 <script>
-const GMEDIA="https://media.terr-a-spect.com";
-const GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'};
-let gposts=[],gidx=0,gtimer=null,tsx=0;
-const gesc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const gclean=s=>(s||'')
+// var (не const/let) на верхньому рівні — щоб pjax міг безпечно перевиконати скрипт.
+var GMEDIA="https://media.terr-a-spect.com";
+var GIC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'};
+var gposts=[],gidx=0,gtimer=null,tsx=0;
+var gesc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+var gclean=s=>(s||'')
   .replace(/\*\*([\s\S]*?)\*\*/g,'$1').replace(/__([\s\S]*?)__/g,'$1')
   .replace(/\*([^*\n]+)\*/g,'$1').replace(/`([^`]+)`/g,'$1')
   .replace(/^\s{0,3}#{1,6}\s+/gm,'').replace(/^\s*>\s?/gm,'')
@@ -331,7 +333,6 @@ function gupd(){
 function gto(i){gidx=(i+gposts.length)%gposts.length;gupd();gStart();}
 function cgo(d){gto(gidx+d);}
 function gStart(){clearInterval(gtimer);if(gposts.length>1)gtimer=setInterval(()=>gto(gidx+1),7000);}
-window.addEventListener('langchange',()=>{ if(gposts.length) gRender(); });   // підпис під мову
 function openLb(type,url){
   document.getElementById('lbInner').innerHTML = type==='video'
     ? `<video src="${url}" controls autoplay playsinline></video>`
@@ -343,8 +344,12 @@ function closeLb(e){
   document.getElementById('lightbox').classList.remove('show');
   document.getElementById('lbInner').innerHTML=''; gStart();
 }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLb({target:{id:'lightbox'}}); });
+if(!window.__idxBound){ window.__idxBound=true;        // слухачі лише раз (pjax перевиконує скрипт)
+  window.addEventListener('langchange', function(){ if(gposts.length) gRender(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLb({target:{id:'lightbox'}}); });
+}
 gInit();
 </script>
+<script src="./player.js" defer></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>Music — Terr-a-spect</title>
 <meta name="description" content="Full-length original nature soundtracks by Terr-a-spect. Listen in the background or download.">
 <link rel="icon" type="image/png" href="./icon.png">
+<link rel="stylesheet" href="./player.css">
 <style>
   :root{--bg0:#06121a;--bg1:#0a1f28;--surface:rgba(18,38,49,.6);--border:rgba(120,190,170,.16);
         --text:#e9f3ef;--muted:#9fb6ad;--accent:#5fe3b4;--accent2:#36c79a;color-scheme:dark}
@@ -140,27 +141,6 @@
   <div class="pager" id="pager"></div>
 </main>
 
-<div class="player" id="player"><div class="pw">
-  <img class="pCover" src="./icon.png" alt="">
-  <div class="pInfo"><div class="pTitle" id="pTitle"></div><div class="pPerf" id="pPerf"></div></div>
-  <div class="pCtrls">
-    <button onclick="prev()" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
-    <button class="big" id="pBtn" onclick="toggle()" aria-label="Play"></button>
-    <button onclick="next()" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
-    <button id="shufBtn" class="shuf" onclick="toggleShuffle()" aria-label="Shuffle" title="Shuffle — next track is random"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
-  </div>
-  <div class="pSeek">
-    <span id="cur">0:00</span>
-    <input id="seek" type="range" min="0" max="1000" value="0" oninput="seekTo(this.value)">
-    <span id="dur">0:00</span>
-  </div>
-  <div class="pVol">
-    <button id="muteBtn" onclick="toggleMute()" aria-label="Mute"></button>
-    <input id="vol" type="range" min="0" max="100" value="100" oninput="setVol(this.value)" aria-label="Volume">
-  </div>
-  <a class="pDl" id="pDl" href="#" download aria-label="Download">⬇</a>
-</div></div>
-
 <footer><div class="wrap">
   <div>© 2026 Terr-a-spect</div>
   <div class="langs" data-lang-switcher></div>
@@ -168,24 +148,20 @@
 
 <script src="./i18n.js"></script>
 <script>
-const MEDIA="https://media.terr-a-spect.com";
-const ART="https://terr-a-spect.com/icon.png";
-const PAGE=10;
-const ICONS={
-  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
-  pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>',
-  vol:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z"/></svg>',
-  mute:'<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 7.4 15 8.9l2.1 2.1L15 13.1l1.5 1.5 2.1-2.1 2.1 2.1 1.5-1.5L20.1 11l2.1-2.1-1.5-1.5L18.6 9.5z"/></svg>'};
-let tracks=[], view=[], page=0, cur=-1, saveT=0;
-const audio=new Audio(); audio.preload="metadata";
-let vol=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(vol))vol=1; audio.volume=vol; let lastVol=vol||1;
-let shuffle=localStorage.getItem('ts_shuffle')==='1';
-let sortKey=localStorage.getItem('ts_sort')||'date'; let sortDir=parseInt(localStorage.getItem('ts_sortd'))||-1;
-const curLang=()=>localStorage.getItem('ts_lang')||(navigator.language||'en').slice(0,2);
-const fmtDate=s=>{if(!s)return'';try{return new Date(s).toLocaleDateString(curLang(),{year:'numeric',month:'short',day:'numeric'});}catch(e){return s.slice(0,10);}};
-const $=id=>document.getElementById(id);
-const fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
-const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Список треків; відтворення делегується глобальному плеєру (player.js → window.TAS).
+// var (не const/let) на верхньому рівні — щоб pjax міг безпечно перевиконати скрипт.
+var MEDIA="https://media.terr-a-spect.com";
+var PAGE=10;
+var tracks=[], view=[], page=0;
+var sortKey=localStorage.getItem('ts_sort')||'date'; var sortDir=parseInt(localStorage.getItem('ts_sortd'))||-1;
+var curLang=()=>localStorage.getItem('ts_lang')||(navigator.language||'en').slice(0,2);
+var fmtDate=s=>{if(!s)return'';try{return new Date(s).toLocaleDateString(curLang(),{year:'numeric',month:'short',day:'numeric'});}catch(e){return s.slice(0,10);}};
+var $=id=>document.getElementById(id);
+var fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+var esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function playMsg(m){ if(window.TAS&&window.TAS.ready()) window.TAS.playByMsg(m);
+  else window.addEventListener('tas:ready',function(){ if(window.TAS) window.TAS.playByMsg(m); },{once:true}); }
 
 async function init(){
   try{
@@ -193,21 +169,16 @@ async function init(){
     tracks=(await r.json()).tracks||[];
   }catch(e){
     $('list').innerHTML='<div class="offline" data-i18n="mus_offline"></div>';
-    setLang(localStorage.getItem('ts_lang')||'en'); return;
+    if(window.setLang) setLang(curLang()); return;
   }
   const asc=[...tracks].sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:a.msg_id-b.msg_id));
   asc.forEach((t,i)=>t.no=i+1);          // стабільний № (найстаріший = 1)
-  applySort(); syncVol();
-  // player завжди знизу: відновлюємо останній трек/позицію (новому юзеру — найсвіжіший)
-  const saved=JSON.parse(localStorage.getItem('ts_last')||'null');
-  let idx = saved ? tracks.findIndex(t=>t.msg_id===saved.msg_id) : -1;
-  if(idx<0 && tracks.length) idx=0;
-  if(idx>=0) loadTrack(idx, (saved&&tracks[idx].msg_id===saved.msg_id)?(saved.time||0):0, false);
-  // глибоке посилання з галереї: ?t=<msg_id> → перейти на потрібну сторінку й увімкнути трек
+  applySort();
+  // глибоке посилання з галереї: ?t=<msg_id> → потрібна сторінка + увімкнути трек у плеєрі
   const tp=new URLSearchParams(location.search).get('t');
   if(tp){
     const ti=tracks.findIndex(t=>String(t.msg_id)===tp);
-    if(ti>=0){ const pos=view.indexOf(tracks[ti]); if(pos>=0){page=Math.floor(pos/PAGE); render();} play(ti); }
+    if(ti>=0){ const pos=view.indexOf(tracks[ti]); if(pos>=0){page=Math.floor(pos/PAGE); render();} playMsg(tp); }
   }
 }
 
@@ -221,18 +192,16 @@ function render(){
   if(page>=pages)page=pages-1;
   const slice=view.slice(page*PAGE,page*PAGE+PAGE);
   $('list').innerHTML = slice.length ? slice.map(t=>{
-    const i=tracks.indexOf(t);
-    return `<div class="row" data-i="${i}" onclick="play(${i})">
+    return `<div class="row" data-msg="${t.msg_id}" onclick="playMsg('${t.msg_id}')">
       <div class="num"><span class="n">${t.no}</span><span class="pi">▶</span></div>
       <div class="meta"><div class="tt">${esc(t.title)||'—'}</div><div class="pf">${esc(t.performer)}</div></div>
-      <input class="rvol" type="range" min="0" max="100" value="100" onclick="event.stopPropagation()" oninput="setVol(this.value)" aria-label="Volume">
       <div class="date">${fmtDate(t.date)}</div>
       <div class="dur">${fmt(t.duration)}</div>
       <a class="dl" href="${MEDIA+t.download}" onclick="event.stopPropagation()" download>⬇</a>
     </div>`;}).join('') : '<div class="offline">'+tt('mus_nores')+'</div>';
   renderPager(pages);
   $('count').textContent=view.length+" "+tt('mus_tracks');
-  mark(); syncVol();
+  mark();
 }
 function renderPager(pages){
   if(pages<=1){$('pager').innerHTML='';return;}
@@ -243,70 +212,29 @@ function renderPager(pages){
 }
 function go(p){page=p;render();window.scrollTo({top:0,behavior:'smooth'});}
 
-function loadTrack(i,seek,autoplay){
-  cur=i; const t=tracks[i];
-  audio.src=MEDIA+t.stream;
-  $('pTitle').textContent=t.title||'—'; $('pPerf').textContent=t.performer||'';
-  $('pDl').href=MEDIA+t.download; $('player').classList.add('show');
-  mark(); setMs(t); persist();
-  if(seek>0) audio.addEventListener('loadedmetadata',function(){audio.currentTime=seek;$('dur').textContent=fmt(audio.duration);},{once:true});
-  if(autoplay) audio.play();
-}
-function play(i){ if(i===cur){toggle();return;} loadTrack(i,0,true); }
-function toggle(){ if(cur<0&&tracks.length){loadTrack(0,0,true);return;} audio.paused?audio.play():audio.pause(); }
-function randIdx(){ if(tracks.length<=1)return 0; let i; do{i=Math.floor(Math.random()*tracks.length);}while(i===cur); return i; }
-function pickNext(){ return shuffle?randIdx():(cur+1)%tracks.length; }
-function next(){ if(tracks.length) loadTrack(pickNext(),0,true); }
-function prev(){ if(tracks.length) loadTrack((cur-1+tracks.length)%tracks.length,0,true); }
-function toggleShuffle(){ shuffle=!shuffle; localStorage.setItem('ts_shuffle',shuffle?'1':'0'); updShuf(); }
-function updShuf(){ const b=$('shufBtn'); if(b) b.classList.toggle('on',shuffle); }
 function setSort(k){ if(sortKey===k) sortDir=-sortDir; else { sortKey=k; sortDir=(k==='name')?1:(k==='date'?-1:1); }
   localStorage.setItem('ts_sort',sortKey); localStorage.setItem('ts_sortd',sortDir); applySort(); }
 function applySort(){
-  const curId=cur>=0?tracks[cur].msg_id:null;
   tracks.sort((a,b)=>{ let r;
     if(sortKey==='name') r=(a.title||'').localeCompare(b.title||'');
     else if(sortKey==='date') r=(a.date<b.date?-1:a.date>b.date?1:0);
     else r=a.no-b.no;
     return r*sortDir; });
-  if(curId!=null) cur=tracks.findIndex(t=>t.msg_id===curId);
   applyFilter(); updSort();
 }
 function updSort(){ document.querySelectorAll('.sortbtn').forEach(b=>{
   const on=b.dataset.k===sortKey; b.classList.toggle('on',on);
   if(on) b.dataset.dir=sortDir>0?'asc':'desc'; else b.removeAttribute('data-dir'); }); }
-function playAll(){ if(view.length) loadTrack(tracks.indexOf(view[0]),0,true); }
-function mark(){document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',+r.dataset.i===cur));}
-function seekTo(v){if(audio.duration)audio.currentTime=v/1000*audio.duration;}
-function persist(){if(cur>=0)localStorage.setItem('ts_last',JSON.stringify({msg_id:tracks[cur].msg_id,time:Math.floor(audio.currentTime||0)}));}
+function playAll(){ if(view.length) playMsg(view[0].msg_id); }
+function mark(){ const m=window.TAS?window.TAS.currentMsg():null;
+  document.querySelectorAll('.row').forEach(r=>r.classList.toggle('on',String(r.dataset.msg)===String(m))); }
 
-function setVol(v){vol=Math.max(0,Math.min(1,v/100));audio.volume=vol;if(vol>0)lastVol=vol;localStorage.setItem('ts_vol',vol);syncVol();}
-function toggleMute(){setVol(vol>0?0:(lastVol||1)*100);}
-function syncVol(){const p=Math.round(vol*100);const pv=$('vol');if(pv)pv.value=p;
-  document.querySelectorAll('.rvol').forEach(r=>r.value=p);
-  const mb=$('muteBtn');if(mb)mb.innerHTML=vol>0?ICONS.vol:ICONS.mute;}
-
-function setMs(t){
-  if('mediaSession' in navigator){
-    navigator.mediaSession.metadata=new MediaMetadata({title:t.title||'',artist:t.performer||'Terr-a-spect',
-      album:'Terr-a-spect',artwork:[{src:ART,sizes:'512x512',type:'image/png'}]});
-    navigator.mediaSession.setActionHandler('play',()=>audio.play());
-    navigator.mediaSession.setActionHandler('pause',()=>audio.pause());
-    navigator.mediaSession.setActionHandler('previoustrack',prev);
-    navigator.mediaSession.setActionHandler('nexttrack',next);
-  }
+if(!window.__musicBound){ window.__musicBound=true;     // слухачі лише раз (pjax перевиконує скрипт)
+  window.addEventListener('tas:track', mark);
+  window.addEventListener('langchange', function(){ if(tracks.length) render(); });
 }
-audio.addEventListener('play',()=>$('pBtn').innerHTML=ICONS.pause);
-audio.addEventListener('pause',()=>{$('pBtn').innerHTML=ICONS.play;persist();});
-audio.addEventListener('ended',next);
-audio.addEventListener('timeupdate',()=>{
-  const d=audio.duration||0,c=audio.currentTime||0;
-  $('seek').value=d?c/d*1000:0;$('cur').textContent=fmt(c);$('dur').textContent=fmt(d);
-  const now=Date.now(); if(now-saveT>3000){saveT=now;persist();}
-});
-$('pBtn').innerHTML=ICONS.play; syncVol(); updShuf(); updSort();
-window.addEventListener('langchange',()=>{ if(tracks.length) render(); });
 init();
 </script>
+<script src="./player.js" defer></script>
 </body>
 </html>

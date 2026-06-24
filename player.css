@@ -1,0 +1,56 @@
+/* Terr-a-spect — глобальний плаваючий плеєр (на всіх сторінках) */
+#tas-player{position:fixed;right:18px;bottom:18px;z-index:60;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --pa:var(--accent,#5fe3b4);--pa2:var(--accent2,#36c79a);--ptxt:var(--text,#e9f3ef);
+  --pmut:var(--muted,#9fb6ad);--pbord:var(--border,rgba(120,190,170,.18))}
+#tas-player.tas-hidden{display:none}
+
+/* ── кругла кнопка (mini) ── */
+.tas-fab{width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--pa2),var(--pa));color:#06231a;
+  display:grid;place-items:center;box-shadow:0 8px 26px rgba(0,0,0,.45);transition:transform .15s,box-shadow .15s}
+.tas-fab:hover{transform:scale(1.06);box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.tas-fab svg{width:24px;height:24px;fill:currentColor}
+.tas-open .tas-fab{display:none}
+/* індикатор «грає» на згорнутій кнопці (еквалайзер) */
+.tas-eq{display:none;align-items:flex-end;gap:3px;height:20px}
+.tas-playing.tas-mini .tas-fab .tas-ico{display:none}
+.tas-playing.tas-mini .tas-fab .tas-eq{display:flex}
+.tas-eq i{width:3px;background:#06231a;border-radius:2px;animation:tas-bounce 1s infinite ease-in-out}
+.tas-eq i:nth-child(1){height:8px;animation-delay:-.4s} .tas-eq i:nth-child(2){height:18px;animation-delay:-.2s}
+.tas-eq i:nth-child(3){height:12px} .tas-eq i:nth-child(4){height:16px;animation-delay:-.3s}
+@keyframes tas-bounce{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+
+/* ── квадратна панель (open) ── */
+.tas-panel{display:none;width:280px;border-radius:16px;overflow:hidden;
+  background:rgba(8,20,28,.96);backdrop-filter:blur(16px);border:1px solid var(--pbord);
+  box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.tas-open .tas-panel{display:block}
+.tas-top{display:flex;align-items:center;gap:10px;padding:12px 12px 8px}
+.tas-cover{width:46px;height:46px;border-radius:10px;flex:0 0 46px;object-fit:cover;background:#0d2029}
+.tas-meta{min-width:0;flex:1}
+.tas-title{font-weight:700;color:var(--ptxt);font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tas-perf{color:var(--pmut);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tas-min{background:none;border:0;color:var(--pmut);cursor:pointer;font-size:1.1rem;line-height:1;padding:4px;border-radius:8px;flex:0 0 auto}
+.tas-min:hover{color:var(--ptxt)}
+/* seek */
+.tas-seek{display:flex;align-items:center;gap:8px;padding:2px 14px}
+.tas-seek span{color:var(--pmut);font-size:.72rem;font-variant-numeric:tabular-nums;width:30px;text-align:center}
+.tas-seek input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:5px;background:#28414a;cursor:pointer}
+.tas-seek input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--pa)}
+.tas-seek input[type=range]::-moz-range-thumb{width:13px;height:13px;border:0;border-radius:50%;background:var(--pa)}
+/* контроли */
+.tas-ctrls{display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px 14px}
+.tas-ctrls button{background:none;border:0;color:var(--ptxt);cursor:pointer;padding:8px;border-radius:50%;display:grid;place-items:center}
+.tas-ctrls button:hover{color:var(--pa)}
+.tas-ctrls svg{width:22px;height:22px;fill:currentColor}
+.tas-ctrls .tas-big{background:var(--ptxt);color:#06231a;width:46px;height:46px}
+.tas-ctrls .tas-big:hover{background:var(--pa)} .tas-ctrls .tas-big svg{width:24px;height:24px}
+.tas-ctrls .tas-shuf.on{color:var(--pa);background:rgba(95,227,180,.16)}
+.tas-dl{margin-left:auto;color:var(--pmut);font-size:1.2rem;text-decoration:none;padding:4px 6px}
+.tas-dl:hover{color:var(--pa)}
+
+@media(max-width:520px){
+  #tas-player{right:12px;bottom:12px}
+  .tas-panel{width:min(86vw,300px)}
+}
