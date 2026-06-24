@@ -6,18 +6,18 @@
 #tas-player.tas-hidden{display:none}
 
 /* ── кругла кнопка (mini) ── */
-.tas-fab{width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
-  background:linear-gradient(135deg,var(--pa2),var(--pa));color:#06231a;
-  display:grid;place-items:center;box-shadow:0 8px 26px rgba(0,0,0,.45);
-  transition:transform .34s cubic-bezier(.34,1.56,.64,1),opacity .24s ease,box-shadow .15s}
-.tas-fab:hover{transform:scale(1.06);box-shadow:0 10px 30px rgba(0,0,0,.55)}
-.tas-fab svg{width:24px;height:24px;fill:currentColor}
+/* зовнішня кнопка — чистий значок без фона/контуру (тінь лише для читабельності) */
+.tas-fab{width:56px;height:56px;border:0;padding:0;cursor:pointer;background:none;
+  color:var(--pa);display:grid;place-items:center;filter:drop-shadow(0 3px 8px rgba(0,0,0,.55));
+  transition:transform .34s cubic-bezier(.34,1.56,.64,1),opacity .24s ease,filter .15s}
+.tas-fab:hover{transform:scale(1.1);filter:drop-shadow(0 4px 12px rgba(0,0,0,.6))}
+.tas-fab svg{width:34px;height:34px;fill:currentColor}
 .tas-open .tas-fab{opacity:0;transform:scale(.35) rotate(-35deg);pointer-events:none}
 /* індикатор «грає» на згорнутій кнопці (еквалайзер) */
 .tas-eq{display:none;align-items:flex-end;gap:3px;height:20px}
 .tas-playing.tas-mini .tas-fab .tas-ico{display:none}
 .tas-playing.tas-mini .tas-fab .tas-eq{display:flex}
-.tas-eq i{width:3px;background:#06231a;border-radius:2px;animation:tas-bounce 1s infinite ease-in-out}
+.tas-eq i{width:3px;background:var(--pa);border-radius:2px;animation:tas-bounce 1s infinite ease-in-out}
 .tas-eq i:nth-child(1){height:8px;animation-delay:-.4s} .tas-eq i:nth-child(2){height:18px;animation-delay:-.2s}
 .tas-eq i:nth-child(3){height:12px} .tas-eq i:nth-child(4){height:16px;animation-delay:-.3s}
 @keyframes tas-bounce{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
