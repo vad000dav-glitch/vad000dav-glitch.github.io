@@ -14,7 +14,7 @@
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
        background:radial-gradient(1100px 500px at 85% -10%,rgba(54,199,154,.16),transparent 60%),
                   linear-gradient(180deg,var(--bg0),var(--bg1));background-attachment:fixed;
-       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:130px}
+       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:40px}
   a{color:var(--accent);text-decoration:none}
   .wrap{max-width:860px;margin:0 auto;padding:0 18px}
   nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(6,18,26,.6);
@@ -231,7 +231,7 @@ function mark(){ const m=window.TAS?window.TAS.currentMsg():null;
 
 if(!window.__musicBound){ window.__musicBound=true;     // слухачі лише раз (pjax перевиконує скрипт)
   window.addEventListener('tas:track', mark);
-  window.addEventListener('langchange', function(){ if(tracks.length) render(); });
+  window.addEventListener('langchange', function(){ if($('list')&&tracks.length) render(); });
 }
 init();
 </script>

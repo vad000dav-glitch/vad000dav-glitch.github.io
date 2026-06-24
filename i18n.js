@@ -134,12 +134,14 @@
   window.setLang = apply;
   window.tt = function (k) { const l = pick(); return (DICT[l] && DICT[l][k]) || DICT.en[k] || k; };
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function buildSwitcher() {
     const host = document.querySelector("[data-lang-switcher]");
     if (host) host.innerHTML = LANGS.map(([c, l]) =>
       `<button class="langbtn" data-l="${c}" onclick="setLang('${c}')">${l}</button>`).join("");
-    apply(pick());
-  });
+  }
+  // (пере)ініціалізація i18n — викликається і після pjax-переходу (DOMContentLoaded тоді не спрацьовує)
+  window.initI18n = function () { buildSwitcher(); apply(pick()); };
+  document.addEventListener("DOMContentLoaded", window.initI18n);
 })();
 
 /* --- секретний вхід в адмінку: лого = тригер; підтвердження в Telegram → сайт сам перекине --- */

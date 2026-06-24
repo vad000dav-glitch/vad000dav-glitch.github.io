@@ -182,8 +182,21 @@
       document.body.appendChild(n); if(n.parentNode) n.parentNode.removeChild(n);
     }
   }
+  function swapHead(doc){
+    // кожна сторінка тримає свій CSS у <head> (<style>) — при pjax його теж треба підмінити,
+    // інакше нова сторінка лишається без своїх стилів (гола).
+    var old=document.head.querySelectorAll('style');
+    for(var i=0;i<old.length;i++){ if(old[i].parentNode) old[i].parentNode.removeChild(old[i]); }
+    var ns=doc.head.querySelectorAll('style');
+    for(var j=0;j<ns.length;j++){ document.head.appendChild(document.importNode(ns[j],true)); }
+    // стилі-лінки сторінки, яких ще нема (player.css/іконки/шрифти лишаються)
+    var have={}, ex=document.head.querySelectorAll('link[rel="stylesheet"]');
+    for(var k=0;k<ex.length;k++){ have[ex[k].getAttribute('href')]=1; }
+    var nl=doc.head.querySelectorAll('link[rel="stylesheet"]');
+    for(var m=0;m<nl.length;m++){ var h=nl[m].getAttribute('href'); if(h&&!have[h]) document.head.appendChild(document.importNode(nl[m],true)); }
+  }
   function afterSwap(){
-    try{ if(window.setLang) window.setLang(localStorage.getItem('ts_lang')||(navigator.language||'en').slice(0,2)); }catch(e){}
+    try{ if(window.initI18n) window.initI18n(); }catch(e){}   // перебудувати мовний перемикач + застосувати мову
   }
   var navigating=false;
   function navigate(url, push){
@@ -192,6 +205,7 @@
       var doc=new DOMParser().parseFromString(html,'text/html');
       if(!doc || !doc.body) throw 0;
       document.title=doc.title||document.title;
+      swapHead(doc);                              // підмінити стилі сторінки (інакше «гола» сторінка)
       // прибрати поточний контент (усе крім плеєра), вставити новий
       var keep=root;
       var frag=document.createDocumentFragment();

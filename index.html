@@ -345,8 +345,9 @@ function closeLb(e){
   document.getElementById('lbInner').innerHTML=''; gStart();
 }
 if(!window.__idxBound){ window.__idxBound=true;        // слухачі лише раз (pjax перевиконує скрипт)
-  window.addEventListener('langchange', function(){ if(gposts.length) gRender(); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLb({target:{id:'lightbox'}}); });
+  // перевіряємо наявність DOM — слухач лишається активним і на інших сторінках (pjax)
+  window.addEventListener('langchange', function(){ if(document.getElementById('cinner')&&gposts.length) gRender(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&document.getElementById('lightbox')) closeLb({target:{id:'lightbox'}}); });
 }
 gInit();
 </script>
