@@ -120,7 +120,8 @@
   .pc-title{font-size:1.15rem;font-weight:700;margin-bottom:14px;color:#bfe9da}
   .pc-body{display:flex;gap:20px}
   .pc-media{flex:0 0 42%;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:#0c1b24;cursor:pointer;position:relative}
-  .pc-media img,.pc-media video{width:100%;height:100%;object-fit:cover;display:block;animation:kb 14s ease-in-out infinite alternate}
+  .pc-media img,.pc-media video{width:100%;height:100%;object-fit:cover;display:block}
+  .pc-media img{animation:kb 14s ease-in-out infinite alternate}   /* Ken-Burns лише для фото — на <video> зум смикав */
   .pc-media:hover img,.pc-media:hover video{filter:brightness(1.06)}
   .pc-playbig{position:absolute;inset:0;margin:auto;width:58px;height:58px;border-radius:50%;background:rgba(8,20,28,.72);display:grid;place-items:center;pointer-events:none}
   .pc-playbig svg{width:26px;height:26px;fill:#fff}
