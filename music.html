@@ -154,7 +154,7 @@ var MEDIA="https://media.terr-a-spect.com";
 var PAGE=10;
 var tracks=[], view=[], page=0;
 var sortKey=localStorage.getItem('ts_sort')||'date'; var sortDir=parseInt(localStorage.getItem('ts_sortd'))||-1;
-var curLang=()=>localStorage.getItem('ts_lang')||(navigator.language||'en').slice(0,2);
+var curLang=()=>localStorage.getItem('ts_lang')||(navigator.language||'uk').slice(0,2);
 var fmtDate=s=>{if(!s)return'';try{return new Date(s).toLocaleDateString(curLang(),{year:'numeric',month:'short',day:'numeric'});}catch(e){return s.slice(0,10);}};
 var $=id=>document.getElementById(id);
 var fmt=s=>{s=Math.round(s||0);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
