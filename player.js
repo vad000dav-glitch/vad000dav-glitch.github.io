@@ -21,6 +21,8 @@
   var audio=new Audio(); audio.preload="metadata";
   var v=parseFloat(localStorage.getItem('ts_vol')); if(isNaN(v))v=1; audio.volume=v;
   var shuffle=localStorage.getItem('ts_shuffle')==='1';
+  var DBG=localStorage.getItem('ts_debug')==='1';   // ts_debug='1' у консолі → лог переходів
+  function dlog(){ if(DBG){ try{ console.log.apply(console,['[TAS]'].concat([].slice.call(arguments))); }catch(e){} } }
 
   // ── DOM ──
   var root=document.createElement('div'); root.id='tas-player'; root.className='tas-mini';
@@ -127,12 +129,18 @@
   }
 
   // ── події audio ──
-  audio.addEventListener('play', function(){ elToggle.innerHTML=IC.pause; root.classList.add('tas-playing'); armIdle(); });
+  // надійний авто-перехід: 'ended' + бекап по timeupdate біля кінця (на стрім-аудіо 'ended'
+  // іноді не настає → трек завмирав і музика «стоп»). Гард advancing → не подвійний перехід.
+  var advancing=false;
+  function goNext(reason){ if(advancing||!tracks.length) return; advancing=true; dlog('advance['+reason+'] from',cur,'shuffle',shuffle); next(); }
+  audio.addEventListener('play', function(){ advancing=false; elToggle.innerHTML=IC.pause; root.classList.add('tas-playing'); armIdle(); });
   audio.addEventListener('pause', function(){ elToggle.innerHTML=IC.play; root.classList.remove('tas-playing'); persist(); });
-  audio.addEventListener('ended', next);
+  audio.addEventListener('ended', function(){ dlog('ended',cur); goNext('ended'); });
+  audio.addEventListener('error', function(){ dlog('error',cur,audio.error&&audio.error.code); });
   audio.addEventListener('timeupdate', function(){
     var d=audio.duration||0, c=audio.currentTime||0;
     elRange.value = d? c/d*1000 : 0; elCur.textContent=fmt(c); elDur.textContent=fmt(d);
+    if(d>0 && c>=d-0.35 && !audio.paused) goNext('near-end');   // бекап, якщо 'ended' не спрацював
     var n=Date.now(); if(n-saveT>3000){ saveT=n; persist(); }
   });
 
