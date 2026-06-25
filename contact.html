@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — Terr-a-spect</title>
+<meta name="description" content="Write to Terr-a-spect — questions, collaboration, or a data-deletion request.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="./icon.png">
+<link rel="stylesheet" href="./player.css">
+<style>
+  :root{--bg0:#06121a;--bg1:#0a1f28;--surface:rgba(18,38,49,.6);--border:rgba(120,190,170,.16);
+        --text:#e9f3ef;--muted:#9fb6ad;--accent:#5fe3b4;--accent2:#36c79a;color-scheme:dark}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+       background:radial-gradient(1100px 500px at 85% -10%,rgba(54,199,154,.16),transparent 60%),
+                  linear-gradient(180deg,var(--bg0),var(--bg1));background-attachment:fixed;
+       color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:rgba(6,18,26,.6);
+      border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;gap:12px;height:62px;max-width:680px}
+  nav img{width:32px;height:32px;border-radius:9px}
+  nav .brand{font-weight:700}
+  nav .home{margin-left:auto;color:var(--muted)} nav .home:hover{color:var(--text)}
+
+  header.h{padding:40px 0 10px}
+  .eyebrow{color:var(--accent);font-weight:700;font-size:.8rem;letter-spacing:2px;text-transform:uppercase}
+  h1{font-size:2.1rem;font-weight:800;margin:6px 0}
+  .sub{color:var(--muted)}
+
+  form{margin-top:22px;display:flex;flex-direction:column;gap:16px}
+  label{display:block;font-weight:600;margin-bottom:6px;font-size:.95rem}
+  .opt{color:var(--muted);font-weight:400;font-size:.85rem}
+  select,input[type=text],textarea{width:100%;background:var(--surface);border:1px solid var(--border);
+        color:var(--text);border-radius:12px;padding:12px 14px;font-size:1rem;outline:none;font-family:inherit}
+  select:focus,input:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical;min-height:140px;line-height:1.5}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .send{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;
+        background:linear-gradient(90deg,var(--accent2),var(--accent));color:#06231a;font-weight:700;
+        border:0;border-radius:30px;padding:13px 30px;cursor:pointer;font-size:1rem}
+  .send:hover{filter:brightness(1.07)} .send:disabled{opacity:.55;cursor:default;filter:none}
+  .status{font-size:.92rem;min-height:1.2em}
+  .status.err{color:#ff9b9b} .status.ok{color:var(--accent)}
+  .privacy{color:var(--muted);font-size:.85rem;margin-top:4px}
+  .done{margin-top:26px;background:var(--surface);border:1px solid var(--accent);border-radius:16px;padding:26px;text-align:center}
+  .done .big{font-size:2rem;margin-bottom:8px}
+
+  footer{border-top:1px solid var(--border);padding:26px 0;margin-top:40px;color:var(--muted);font-size:.9rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+  .langs{display:flex;gap:6px}
+  .langbtn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:8px;
+           padding:5px 10px;font-size:.8rem;cursor:pointer}
+  .langbtn.on{color:#06231a;background:var(--accent);border-color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <img src="./icon.png" alt="Terr-a-spect"><span class="brand">Terr-a-spect</span>
+  <a class="home" href="./index.html" data-i18n="nav_home">Home</a>
+</div></nav>
+
+<header class="h"><div class="wrap">
+  <div class="eyebrow" data-i18n="nav_contact">Contact</div>
+  <h1 data-i18n="ct_h1">Write to us</h1>
+  <p class="sub" data-i18n="ct_sub">Questions, collaboration, or a data-deletion request — write below. Leave a contact and we'll reply.</p>
+</div></header>
+
+<main class="wrap">
+  <form id="ct_form" onsubmit="return submitContact(event)" autocomplete="off">
+    <div>
+      <label for="ct_category" data-i18n="ct_cat">Topic</label>
+      <select id="ct_category">
+        <option value="question"  data-i18n="ct_cat_question">Question</option>
+        <option value="collab"    data-i18n="ct_cat_collab">Collaboration</option>
+        <option value="deletion"  data-i18n="ct_cat_deletion">Data deletion</option>
+        <option value="other"     data-i18n="ct_cat_other">Other</option>
+      </select>
+    </div>
+    <div>
+      <label for="ct_message" data-i18n="ct_msg">Message</label>
+      <textarea id="ct_message" maxlength="4000" data-i18n-ph="ct_msg_ph" placeholder="Your message…"></textarea>
+    </div>
+    <div>
+      <label for="ct_contact"><span data-i18n="ct_contact">How can we reach you back?</span> <span class="opt" data-i18n="ct_optional">(optional)</span></label>
+      <input type="text" id="ct_contact" maxlength="200" data-i18n-ph="ct_contact_ph" placeholder="Email or @telegram">
+    </div>
+    <div>
+      <label for="ct_name"><span data-i18n="ct_name">Name</span> <span class="opt" data-i18n="ct_optional">(optional)</span></label>
+      <input type="text" id="ct_name" maxlength="100" data-i18n-ph="ct_name_ph" placeholder="Your name">
+    </div>
+    <!-- honeypot: люди не бачать; боти заповнюють -->
+    <div class="hp" aria-hidden="true"><label>Website</label><input type="text" id="ct_hp" tabindex="-1" autocomplete="off"></div>
+    <div>
+      <button class="send" id="ct_send" type="submit">▶&nbsp;<span data-i18n="ct_send">Send</span></button>
+      <div class="status" id="ct_status"></div>
+    </div>
+    <p class="privacy" data-i18n-html="ct_privacy">We store your message only to respond to you. See our <a href="./privacy.html">Privacy Policy</a>.</p>
+  </form>
+
+  <div class="done" id="ct_done" style="display:none">
+    <div class="big">✅</div>
+    <div data-i18n="ct_ok">Thanks! We received your message and will reply if you left a contact.</div>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <div>© 2026 Terr-a-spect</div>
+  <div class="langs" data-lang-switcher></div>
+</div></footer>
+
+<script src="./i18n.js"></script>
+<script>
+var ADMIN="https://admin.terr-a-spect.com";
+function setStatus(t,cls){ var e=document.getElementById('ct_status'); e.textContent=t||''; e.className='status'+(cls?(' '+cls):''); }
+async function submitContact(e){
+  e.preventDefault();
+  var msg=document.getElementById('ct_message').value.trim();
+  if(msg.length<20){ setStatus(tt('ct_short'),'err'); return false; }
+  var body={ message:msg,
+    category:document.getElementById('ct_category').value,
+    contact:document.getElementById('ct_contact').value.trim(),
+    name:document.getElementById('ct_name').value.trim(),
+    hp:document.getElementById('ct_hp').value,
+    lang:(localStorage.getItem('ts_lang')||'') };
+  var btn=document.getElementById('ct_send'); btn.disabled=true; setStatus(tt('ct_sending'),'');
+  try{
+    var r=await fetch(ADMIN+"/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(r.ok){ document.getElementById('ct_form').style.display='none'; document.getElementById('ct_done').style.display=''; window.scrollTo(0,0); }
+    else if(r.status===429){ setStatus(tt('ct_rate'),'err'); btn.disabled=false; }
+    else{ setStatus(tt('ct_err'),'err'); btn.disabled=false; }
+  }catch(err){ setStatus(tt('ct_err'),'err'); btn.disabled=false; }
+  return false;
+}
+</script>
+<script src="./player.js" defer></script>
+</body>
+</html>
